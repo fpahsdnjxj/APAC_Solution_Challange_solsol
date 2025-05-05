@@ -35,3 +35,10 @@ out/
 
 ### VS Code ###
 .vscode/
+
+# Firebase service key
+firebase-service-account.json
+
+# Application secrets
+application-secret.properties
+
