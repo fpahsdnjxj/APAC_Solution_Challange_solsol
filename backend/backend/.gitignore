@@ -37,7 +37,7 @@ out/
 .vscode/
 
 # Firebase service key
-firebase-service-account.json
+src/main/resources/firebase-service-account.json
 
 # Application secrets
 application-secret.properties
