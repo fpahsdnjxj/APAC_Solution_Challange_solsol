@@ -9,12 +9,15 @@ import lombok.Setter;
 import java.util.List;
 
 @Entity
-@Getter
+@Table(name="chats")
 @Setter
+@Getter
 public class Chat extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
+
+    private String title;
 
     @ManyToOne
     @JoinColumn(name="user_id", referencedColumnName = "id")
@@ -24,8 +27,13 @@ public class Chat extends BaseTimeEntity {
     private Chattype type;
 
     @ElementCollection
-    @CollectionTable(name="project_form_keywords")
-    @Column(name="keywords")
+    @CollectionTable(
+            name = "chat_keywords",
+            joinColumns = @JoinColumn(name = "chat_id") // Chat 엔티티의 id를 외래 키로 사용
+    )
+    @Column(name = "keywords")
     private List<String> keywords;
 
+    @Column(name = "is_completed")
+    private boolean completed = false;
 }

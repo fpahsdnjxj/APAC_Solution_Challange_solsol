@@ -15,16 +15,21 @@ public class FirebaseConfig {
     @PostConstruct
     public void initialize() {
         try {
-            FileInputStream serviceAccount =
-                    new FileInputStream("src/main/resources/firebase-service-account.json");
+            // 이미 초기화된 앱이 있으면 다시 초기화하지 않음
+            if (FirebaseApp.getApps().isEmpty()) {
+                FileInputStream serviceAccount =
+                        new FileInputStream("src/main/resources/firebase-service-account.json");
 
-            FirebaseOptions options = FirebaseOptions.builder()
-                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                    .build();
+                FirebaseOptions options = FirebaseOptions.builder()
+                        .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                        .build();
 
-            FirebaseApp.initializeApp(options);
+                FirebaseApp.initializeApp(options);
 
-            System.out.println("Firebase initialized");
+                System.out.println("Firebase initialized");
+            } else {
+                System.out.println("⚠Firebase already initialized");
+            }
         } catch (IOException e) {
             throw new RuntimeException("Firebase initialization failed", e);
         }

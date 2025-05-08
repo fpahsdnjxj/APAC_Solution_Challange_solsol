@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface ChatRepository extends JpaRepository<Chat, Long> {
     List<Chat> findByUser(User user);
+    List<Chat> findByUserIdAndCompletedFalse(Long userId);
 }

@@ -31,4 +31,5 @@ public class AuthController {
     public ResponseEntity<TokenResponseDto> login(@RequestBody @Valid UserLoginRequestDto dto) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.login(dto));
     }
+
 }

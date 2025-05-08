@@ -6,9 +6,11 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "export")
 @Getter
 @Setter
 public class Export extends BaseTimeEntity {
@@ -19,14 +21,19 @@ public class Export extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Chattype type;
 
+    private String title;
+
     @ManyToOne
-    @JoinColumn(name="chat_id", referencedColumnName = "id")
+    @JoinColumn(name = "chat_id", referencedColumnName = "id")
     private Chat chat;
 
     private String content;
 
     @ElementCollection
-    @CollectionTable(name="export_image_urls")
-    @Column(name="image_urls")
-    private List<String> image_urls;
+    @CollectionTable(
+            name = "export_image_urls",
+            joinColumns = @JoinColumn(name = "export_id") // FK 명시
+    )
+    @Column(name = "image_url") // 단수로 명명하는 게 일반적
+    private List<String> imageUrls=new ArrayList<>();
 }

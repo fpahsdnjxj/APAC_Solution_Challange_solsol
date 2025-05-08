@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -22,18 +23,24 @@ public class Message extends BaseTimeEntity {
     private Chat chat;
 
     @Enumerated(EnumType.STRING)
-    private Senderrole sender_role;
+    private Senderrole senderRole=Senderrole.user;
 
     private String content;
 
     @ElementCollection
-    @CollectionTable(name="message_links")
-    @Column(name="links")
-    private List<String> links;
+    @CollectionTable(
+            name = "message_links",
+            joinColumns = @JoinColumn(name = "message_id") // Message 엔티티의 id를 외래 키로 사용
+    )
+    @Column(name = "link")
+    private List<String> links = new ArrayList<>();
 
     @ElementCollection
-    @CollectionTable(name="message_image_urls")
-    @Column(name="image_urls")
-    private List<String> image_urls;
+    @CollectionTable(
+            name = "message_image_urls",
+            joinColumns = @JoinColumn(name = "message_id")
+    )
+    @Column(name = "image_url")
+    private List<String> imageUrls = new ArrayList<>();
 
 }

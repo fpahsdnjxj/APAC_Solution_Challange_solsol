@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface ExportRepository extends JpaRepository<Export, Long> {
     List<Export> findByChat(Chat chat);
+    List<Export> findByChat_User_Id(Long userId);
 }
