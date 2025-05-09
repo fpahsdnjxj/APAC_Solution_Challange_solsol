@@ -2,24 +2,16 @@ package com.solsoll.ttarang.backend.service;
 
 import com.solsoll.ttarang.backend.common.Chattype;
 import com.solsoll.ttarang.backend.common.Senderrole;
-import com.solsoll.ttarang.backend.domain.Chat;
-import com.solsoll.ttarang.backend.domain.Message;
-import com.solsoll.ttarang.backend.domain.ProjectForm;
-import com.solsoll.ttarang.backend.domain.User;
-import com.solsoll.ttarang.backend.dto.ChatRequestDTO;
-import com.solsoll.ttarang.backend.dto.ChatResponseDTO;
-import com.solsoll.ttarang.backend.dto.PlanningChatRequest;
-import com.solsoll.ttarang.backend.dto.PlanningChatResponse;
+import com.solsoll.ttarang.backend.domain.*;
+import com.solsoll.ttarang.backend.dto.*;
 import com.solsoll.ttarang.backend.exception.CustomException;
 import com.solsoll.ttarang.backend.exception.ErrorCode;
-import com.solsoll.ttarang.backend.repository.ChatRepository;
-import com.solsoll.ttarang.backend.repository.MessageRepository;
-import com.solsoll.ttarang.backend.repository.ProjectFormRepository;
-import com.solsoll.ttarang.backend.repository.UserRepository;
+import com.solsoll.ttarang.backend.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,6 +25,8 @@ public class ChatService {
     private final MessageRepository messageRepository;
     private final ProjectFormRepository projectFormRepository;
     private final UserRepository userRepository;
+    private final ExportRepository exportRepository;
+    private final MessageService messageService;
 
     public List<Chat> getIncompleteChatsByUserId(Long userId) {
         return chatRepository.findByUserIdAndCompletedFalse(userId);
@@ -46,14 +40,14 @@ public class ChatService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, "User not found"));
 
-        AIChatCreateResponse aiResponse = aiIntegrationService.processChat(request);
+        AIChatCreateResponse aiResponse = aiIntegrationService.processPlanningChat(request);
 
         Chat chat = new Chat();
         chat.setTitle(request.getTitle());
         chat.setKeywords(aiResponse.getKeywords());
-        chat.setType(Chattype.planning); // 예: 기획 타입으로 설정
-        chat.setUser(user); // 만약 유저 정보도 받아왔다면
-        chatRepository.save(chat); // save 이후 chat.id가 생성됨
+        chat.setType(Chattype.planning);
+        chat.setUser(user);
+        chatRepository.save(chat);
 
         ProjectForm form = new ProjectForm();
         form.setChat(chat);
@@ -70,13 +64,40 @@ public class ChatService {
         projectFormRepository.save(form);
 
         return new PlanningChatResponse(
-                aiResponse.getChatId(),
-                request.getTitle(),
+                chat.getId(),
+                aiResponse.getTitle(),
                 aiResponse.getKeywords()
         );
     }
 
-    public ChatResponseDTO processMessage(Chat chat, ChatRequestDTO request) {
+    public MarketingChatResponse createMarketingChat(Long userId, Long chatId) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, "User not found"));
+
+        Chat originalChat = chatRepository.findById(chatId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, "Original chat not found"));
+
+        Export export = exportRepository.findByChat(originalChat)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, "Export not found for chat"));
+
+        AIChatCreateResponse aiResponse = aiIntegrationService.processMarketingChat(export);
+
+        Chat chat = new Chat();
+        chat.setTitle(export.getTitle());
+        chat.setKeywords(aiResponse.getKeywords());
+        chat.setType(Chattype.marketing);
+        chat.setUser(user);
+        chatRepository.save(chat);
+
+        return new MarketingChatResponse(
+                chat.getId(),
+                chat.getTitle(),
+                chat.getKeywords()
+        );
+    }
+
+    public ChatResponseDto processMessage(Chat chat, ChatRequestDto request) {
 
         Message userMessage = new Message();
         userMessage.setChat(chat);
@@ -94,11 +115,54 @@ public class ChatService {
         aiMessage.setLinks(aiResult.getLinks());
         messageRepository.save(aiMessage);
 
-        return new ChatResponseDTO(
+        return new ChatResponseDto(
                 "ai",
                 aiResult.getContent(),
                 aiResult.getLinks()
         );
     }
 
+    public void  markChatAsFinished(Long chatId, Long userId) {
+        Chat chat = chatRepository.findById(chatId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, "Chat with id '" + chatId + "' not found"));
+
+        if (!chat.getUser().getId().equals(userId)) {
+            throw new CustomException(ErrorCode.UNAUTHORIZED);
+        }
+
+        List<Message> messages = messageService.findMessagesByChat(chat);
+
+        chat.setCompleted(true);
+        chatRepository.save(chat);
+
+        Chattype type = chat.getType();
+
+        ExportAIResponse aiResult;
+
+        if (type == Chattype.planning) {
+            ProjectForm defaultInfo = projectFormRepository.findByChat(chat)
+                    .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, "No ProjectForm found for chat id " + chatId));
+
+            aiResult =aiIntegrationService.generatePlanningFinalExport(messages, defaultInfo);
+
+        } else if (type == Chattype.marketing) {
+            Export defaultInfo = exportRepository.findByChat(chat)
+                    .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, "No Export found for chat id " + chatId));
+
+            aiResult =aiIntegrationService.generateMarketingFinalExport(messages, defaultInfo);
+
+        } else {
+            throw new CustomException(ErrorCode.BAD_REQUEST, "Invalid chat type for final export");
+        }
+
+        Export finalExport = new Export();
+        finalExport.setChat(chat);
+        finalExport.setContent(aiResult.getContent());
+        finalExport.setType(type);
+        finalExport.setTitle(chat.getTitle());
+        exportRepository.save(finalExport);
+        finalExport.setImageUrls(new ArrayList<>(aiResult.getImageUrls()));
+        finalExport.setLinks(new ArrayList<>(aiResult.getLinks()));
+        exportRepository.save(finalExport);
+    }
 }

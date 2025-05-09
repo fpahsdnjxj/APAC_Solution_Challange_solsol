@@ -42,6 +42,6 @@ public class ProjectForm extends BaseTimeEntity {
 
     private String available_dates = "";
     private String duration = "";
-    private double price = 0.0;
+    private double price ;
     private String policy = "";
 }

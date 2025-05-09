@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class ChatRequestDTO {
+public class ChatRequestDto {
     private String contentText;
     private List<String> imageUrls;
 }

@@ -3,8 +3,8 @@ package com.solsoll.ttarang.backend.controller;
 import com.solsoll.ttarang.backend.domain.Chat;
 import com.solsoll.ttarang.backend.domain.Message;
 import com.solsoll.ttarang.backend.domain.User;
-import com.solsoll.ttarang.backend.dto.ChatRequestDTO;
-import com.solsoll.ttarang.backend.dto.ChatResponseDTO;
+import com.solsoll.ttarang.backend.dto.ChatRequestDto;
+import com.solsoll.ttarang.backend.dto.ChatResponseDto;
 import com.solsoll.ttarang.backend.dto.PlanningChatRequest;
 import com.solsoll.ttarang.backend.dto.PlanningChatResponse;
 import com.solsoll.ttarang.backend.exception.CustomException;
@@ -70,13 +70,13 @@ public class ChatController {
             @PathVariable("chatid") Long chatId,
             @AuthenticationPrincipal org.springframework.security.core.userdetails.User userDetails,
             @RequestHeader("Authorization") String authorization,
-            @RequestBody ChatRequestDTO request
+            @RequestBody ChatRequestDto request
     ) {
         try {
             Chat chat = chatService.findChatById(chatId)
                     .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, "Chat with id '" + chatId + "' not found"));
 
-            ChatResponseDTO aiResponse = chatService.processMessage(chat, request);
+            ChatResponseDto aiResponse = chatService.processMessage(chat, request);
 
             return ResponseEntity.ok(Map.of(
                     "sender_role", "ai",
@@ -101,14 +101,11 @@ public class ChatController {
             @AuthenticationPrincipal org.springframework.security.core.userdetails.User userDetails
     ) {
         try {
-            // 1. 채팅 존재 여부 확인
             Chat chat = chatService.findChatById(chatId)
                     .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, "Chat with id '" + chatId + "' not found"));
 
-            // 2. 메시지 조회
             List<Message> messages = messageService.findMessagesByChat(chat);
 
-            // 3. 응답 형식에 맞게 변환
             List<Map<String, Object>> messageList = messages.stream()
                     .map(m -> Map.of(
                             "sender_role", m.getSenderRole().name().toLowerCase(),
@@ -123,6 +120,31 @@ public class ChatController {
             return ResponseEntity.status(e.getErrorCode().getStatus())
                     .body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Internal server error"));
+        }
+    }
+
+    @PatchMapping("/{chatid}/chat_complete")
+    public ResponseEntity<?> completeChat(
+            @PathVariable("chatid") Long chatId,
+            @AuthenticationPrincipal org.springframework.security.core.userdetails.User userDetails
+    ) {
+        try {
+            Long userId = getUserIdFromEmail(userDetails.getUsername());
+
+            chatService.markChatAsFinished(chatId, userId);
+
+            return ResponseEntity.ok(Map.of(
+                    "message", "chat id " + chatId + " is finished"
+            ));
+
+        } catch (CustomException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(e.getErrorCode().getStatus())
+                    .body(Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Internal server error"));
         }

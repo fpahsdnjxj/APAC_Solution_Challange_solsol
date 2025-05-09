@@ -1,15 +1,14 @@
 package com.solsoll.ttarang.backend.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 
 import java.util.List;
+@Getter
 
-@Data
 @AllArgsConstructor
-public class PlanningChatResponse {
-    private Long chatId;
+public class MarketingChatResponse {
+    private Long chatid;
     private String title;
-    private List<String> keywords;
+    private List<String> keyword;
 }
-
