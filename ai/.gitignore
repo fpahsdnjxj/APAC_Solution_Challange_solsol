@@ -1,0 +1,46 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environment
+.venv/
+env/
+venv/
+
+# IDEs and editors
+.idea/
+.vscode/
+*.swp
+
+# Logs
+*.log
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Python packaging
+*.egg-info/
+dist/
+build/
+
+# dotenv / secrets
+.env
+.env.*
+
+# Jupyter notebooks (if used)
+.ipynb_checkpoints/
+
+# Pydantic cache (if enabled)
+__pydantic_cache__/
+
+# Coverage reports
+htmlcov/
+.coverage
+coverage.xml
+
+# Test output
+.tox/
+.pytest_cache/
