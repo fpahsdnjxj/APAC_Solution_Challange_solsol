@@ -1,0 +1,241 @@
+.home-wrapper {
+    
+    font-family: 'Noto Sans KR', sans-serif;
+    background-color: #FAF7F6;
+}
+  
+.section-document {
+    margin-bottom: 5px;
+    background-color: white;
+    margin-top: 0;
+    margin-left: 3em;
+    margin-right: 3em;
+    padding: 0.5em 2em;
+}
+
+.section-chatting {
+    margin-bottom: 5px;
+    background-color: white;
+    margin-top: 0;
+    margin-left: 3em;
+    margin-right: 3em;
+    padding: 0.5em 2em;
+    padding-bottom: 2em;
+}
+  
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+  
+.filters {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+  
+.filter {
+    cursor: pointer;
+    color: #aaa;
+    font-weight: 500;
+}
+  
+.filter.active {
+    color: #ff6d6d;
+    font-weight: bold;
+}
+
+.card-slider {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+    margin-bottom: 30px;
+    align-items: center;
+    justify-content: center;
+}
+  
+.card-list {
+    display: flex;
+    gap: 4px;
+    overflow: hidden;
+    max-width: 840px;
+    width: 100%;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+
+}
+
+
+.plan-card {
+    position: relative;
+    width: 200px;
+    height: 80px;
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 0px 0px 5px rgba(52, 19, 19, 0.1);
+    padding: 17px 16px 16px 46px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .plan-card.empty-card {
+    visibility: hidden; /* 보이지 않지만 공간은 차지 */
+    pointer-events: none;
+  }
+
+  
+  .plan-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 30px;
+    border-radius: 16px 0 0 16px;
+    background-color: transparent;
+  }
+  
+  .plan-card.marketing::before {
+    background-color: #FFA298;
+  }
+  
+  .plan-card.planning::before {
+    background-color: #CFCCCB;
+  }
+  
+  .slide-button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0 10px;
+  }
+  
+  .slide-button:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+  
+.card-title {
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 8px;
+}
+  
+.card-description {
+    color: #888;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+  
+.card-date {
+    font-size: 0.85rem;
+    color: #aaa;
+}
+  
+.chat-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+  
+.chat-item {
+    position: relative;
+    background: white;
+    border-radius: 8px;
+    padding: 16px 16px 16px 50px; /* 좌측 여백 확보 */
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    justify-content: space-between;
+    box-shadow: 0px 0px 5px rgba(52, 19, 19, 0.1);
+  }
+  
+  .chat-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 30px;
+    border-radius: 8px 0 0 8px;
+    background-color: transparent;
+  }
+  
+  /* 마케팅: 다홍색 */
+  .chat-item.marketing::before {
+    background-color: #FFA298;
+  }
+  
+  /* 기획: 회색 */
+  .chat-item.planning::before {
+    background-color: #CFCCCB;
+  }
+  
+  
+.chat-title {
+    font-weight: bold;
+    min-width: 60px;
+}
+  
+.chat-keywords {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    flex: 1;
+}
+  
+.keyword-tag {
+    border-radius: 12px;
+    padding: 4px 12px;
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+  
+  /* 마케팅: 다홍색 */
+  .keyword-tag.marketing {
+    background-color: #FFDAD7;
+    color: #FF6D6D;
+  }
+  
+  /* 기획: 회색 */
+  .keyword-tag.planning {
+    background-color: #E0E0E0;
+    color: #555;
+  }
+  
+.keyword-tag.highlight {
+    background-color: #ffdad7;
+    color: #ff6d6d;
+    font-weight: 500;
+}
+  
+.chat-date {
+    font-size: 0.85rem;
+    color: #aaa;
+    white-space: nowrap;
+}
+  
+.create-button {
+    background-color: #ff6d6d;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+  
+.footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #ff6d6d;
+    color: white;
+    font-size: 0.9rem;
+    border-radius: 8px 8px 0 0;
+    margin-top: 40px;
+}
+  

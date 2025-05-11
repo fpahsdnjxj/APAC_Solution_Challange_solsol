@@ -1,0 +1,108 @@
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff6f4;
+    height: 100vh;
+    font-family: 'Noto Sans KR', sans-serif;
+    padding: 0 100px;
+  }
+  
+  .logo-box {
+    width: 500px;
+  }
+  
+  .logo-image {
+    width: 220px;
+    height: 88px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+  
+  .login-form {
+    display: flex;
+    width: 335px;
+    max-width: 90;
+    padding: 63px 61px 64px 61px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+    border-radius: 30px;
+    border: 5px solid #FFB5A9;
+    background: rgba(255, 255, 255, 0.20);
+    box-shadow: 0px 0px 20px 0px rgba(97, 0, 0, 0.10);
+  }
+  
+  .login-form label {
+    align-self: stretch;
+    color: #FF6449;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    margin-top: 1em;
+    width: 335px;
+  }
+  
+  .login-form input {
+    box-sizing: border-box;
+    height: 48px;
+    width: 335px;
+    align-self: stretch;
+    border-radius: 10px;
+    border: 2px solid #FF6449;
+    background: #FFF;
+  }
+  
+.button-group {
+    margin-top: 60px;
+}
+
+  .login-button {
+    color: #FFF;
+    font-size: 18px;
+    font-weight: 700;
+    display: flex;
+    height: 48px;
+    width: 335px;
+    padding: 10px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    align-self: stretch;
+    border-radius: 10px;
+    background: #FF6449;
+    border: none;
+  }
+  
+  .google-button {
+    color: #FFF;
+    font-size: 18px;
+    font-weight: 700;
+    display: flex;
+    height: 48px;
+    width: 335px;
+    padding: 10px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    align-self: stretch;
+    border-radius: 10px;
+    background: #52504F;   
+    margin-top: 7px; 
+    border: none;
+  }
+  
+  .link-row {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 32px;
+    font-size: 14px;
+  }
+  
+  .link-text {
+    color: #ff6d6d;
+    cursor: pointer;
+    font-weight: 700;
+    text-decoration: underline;
+  }
