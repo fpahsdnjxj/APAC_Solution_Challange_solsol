@@ -4,6 +4,7 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 
 import jakarta.annotation.PostConstruct;
 import java.io.FileInputStream;
@@ -15,10 +16,10 @@ public class FirebaseConfig {
     @PostConstruct
     public void initialize() {
         try {
-            // 이미 초기화된 앱이 있으면 다시 초기화하지 않음
             if (FirebaseApp.getApps().isEmpty()) {
-                FileInputStream serviceAccount =
-                        new FileInputStream("src/main/resources/firebase-service-account.json");
+                ClassPathResource resource = new ClassPathResource("firebase-service-account.json");
+                FileInputStream serviceAccount = new FileInputStream(resource.getFile());
+
 
                 FirebaseOptions options = FirebaseOptions.builder()
                         .setCredentials(GoogleCredentials.fromStream(serviceAccount))
