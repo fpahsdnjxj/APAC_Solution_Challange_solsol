@@ -16,3 +16,9 @@ class MarketingRequest(BaseModel):
     content: str
     image_urls: list[str]
     links:list[str]
+
+class Message(BaseModel):
+    sender_role: str
+    content_text: str
+    links: list[str]
+    image_urls: list[str]
