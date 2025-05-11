@@ -1,0 +1,6 @@
+# vscode 터미널에서 pip install -r requirements.txt 실행
+fastapi
+uvicorn
+python-dotenv
+google-generativeai
+pytrends
