@@ -1,0 +1,45 @@
+# Node.js (frontend)
+node_modules/
+dist/
+.env
+.env.local
+.vite/
+
+# Python (ai)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+env/
+
+# Java (backend)
+.gradle/
+build/
+out/
+*.class
+*.jar
+*.war
+*.iml
+*.log
+
+# IntelliJ / VSCode
+.idea/
+.vscode/
+*.iws
+*.ipr
+*.iml
+
+# Docker
+**/.env
+docker-compose.override.yml
+
+# Firebase private key
+backend/src/main/resources/firebase-service-account.json
+
+# Application secrets
+backend/src/main/resources/application-secret.properties
+
+# System
+.DS_Store
+Thumbs.db
