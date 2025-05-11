@@ -1,20 +1,12 @@
+from ai_module.api_example import PlanningRequest
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from ai_module.gemini_client import generate_tourism_plan
 from ai_module.utils import generate_title_and_keywords_from_markdown
 
-router = APIRouter()
+router = APIRouter("/ai")
 
-class PlanningRequest(BaseModel):
-    title: str
-    detail_info: str
-    location: str
-    image_urls: list[str]
-    keywords: list[str]
-    available_dates: str
-    duration: str
-    price: int
-    policy: str
+
 
 @router.post("/planning")
 async def planning(request: PlanningRequest):
@@ -36,3 +28,5 @@ async def planning(request: PlanningRequest):
     except Exception as e:
         print(f"❌ Error: {e}")
         raise HTTPException(status_code=500, detail="An error occurred while generating the plan")
+    
+
