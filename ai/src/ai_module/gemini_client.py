@@ -3,6 +3,7 @@ import os
 from .prompt_templates import tourism_plan_prompt
 from .prompt_templates import marketing_strategy_prompt_template
 from .utils import generate_title_and_keywords_from_markdown
+from schema.request import Message
 
 api_key = os.getenv("GEMINI_API_KEY")
 genai.configure(api_key=api_key)
@@ -54,14 +55,14 @@ def generate_marketing_strategy(info: dict) -> str:
 
 
 # 지금까지 대화 기반으로 답함 (/ai/message 용)
-def generate_chat_response(previous_message_list: list, current_message: dict) -> str:
+def generate_chat_response(previous_message_list: list, current_message: Message) -> str:
     chat_history = ""
     for msg in previous_message_list:
-        role = msg["sender_role"]
-        content = msg["content_text"]
+        role = msg.sender_role
+        content = msg.content_text
         chat_history += f"{role.upper()}: {content}\n"
 
-    chat_history += f"{current_message['sender_role'].upper()}: {current_message['content_text']}\n"
+    chat_history += f"{current_message.sender_role.upper()}: {current_message.content_text}\n"
     prompt = chat_prompt_template.format(chat_history=chat_history.strip())
 
     response = gemini_client.generate_content(prompt)

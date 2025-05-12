@@ -22,3 +22,8 @@ class Message(BaseModel):
     content_text: str
     links: list[str]
     image_urls: list[str]
+
+class PreviousChatInfo(BaseModel):
+    is_completed: bool
+    previous_message_list: list[Message]
+    current_message: Message
