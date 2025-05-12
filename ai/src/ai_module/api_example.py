@@ -1,8 +1,8 @@
 #api 처리 흐름 예시 (fastapi)
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from ai.gemini_client import generate_tourism_plan
-from ai.extract_utils import generate_title_and_keywords_from_markdown
+from .gemini_client import generate_tourism_plan
+from .utils import generate_title_and_keywords_from_markdown
 
 router = APIRouter()
 

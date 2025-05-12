@@ -1,8 +1,8 @@
 import google.generativeai as genai
 import os
-from ai.prompt_templates import tourism_plan_prompt
-from ai.prompt_templates import marketing_strategy_prompt_template
-from ai.utils import generate_title_and_keywords_from_markdown  # 이 부분을 추가
+from .prompt_templates import tourism_plan_prompt
+from .prompt_templates import marketing_strategy_prompt_template
+from .utils import generate_title_and_keywords_from_markdown
 
 api_key = os.getenv("GEMINI_API_KEY")
 genai.configure(api_key=api_key)
@@ -11,7 +11,6 @@ gemini_client = genai.GenerativeModel(model_name="gemini-1.5-pro-latest")
 
 # 관광 상품 기획서 생성 함수
 def generate_tourism_plan(info: dict) -> str:
-    from ai.prompt_templates import tourism_plan_prompt
     prompt = tourism_plan_prompt.format(
         title=info["title"],
         detail_info=info["detail_info"],
@@ -25,7 +24,7 @@ def generate_tourism_plan(info: dict) -> str:
     )
     try:
         response = gemini_client.generate_content(prompt)
-        response_text = response.text # 이렇게 해야 오류 안발생함
+        response_text = response.text
         return response_text
     except Exception as e:
         print("Error generating tourism plan:", e)
@@ -34,7 +33,6 @@ def generate_tourism_plan(info: dict) -> str:
 
 # 마케팅
 def generate_marketing_strategy(info: dict) -> str:
-    from ai.prompt_templates import marketing_strategy_prompt
     prompt = marketing_strategy_prompt_template.format(
         title=info["title"],
         detail_info=info["detail_info"],
