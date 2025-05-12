@@ -16,13 +16,9 @@ const Login = () => {
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        console.log('로컬 테스트용 로그인 정보:', formData);
-
-        //백엔드 연결 시 이쪽 코드 사용
-        /*
         try {
             const response = await axios.post('/auth/login', {
                 email: formData.email,
@@ -31,55 +27,36 @@ const Login = () => {
                 headers: { 'Content-Type': 'application/json' }
             });
 
-            const { access_token, user_name } = response.data;
-            console.log('로그인 성공:', user_name);
-
-            // 토큰 저장
-            localStorage.setItem('access_token', access_token);
-
-            navigate('/');
-        } catch (error) {
-            if (error.response && error.response.status === 401) {
-                alert('이메일 또는 비밀번호가 올바르지 않습니다.');
-            } else {
-                alert('로그인 중 오류가 발생했습니다.');
-                console.error(error);
+            const { accessToken, refreshToken } = response.data;
+            if (accessToken) {
+                localStorage.setItem('accessToken', accessToken);
+                if (refreshToken) {
+                    localStorage.setItem('refreshToken', refreshToken);
+                }
+                alert('로그인 성공');
+                navigate('/');
             }
-        }
-        */
-
-        navigate('/');
-    };
-    const handleGoogleLogin = async () => {
-        const id_token = prompt('구글에서 받은 id_token을 입력하세요:');
-    
-        if (!id_token) return;
-    
-        //구글 로그인 연동 코드
-        /*
-        try {
-          const response = await axios.post('/auth/google', {
-            id_token: id_token
-          }, {
-            headers: { 'Content-Type': 'application/json' }
-          });
-    
-          const { access_token, user_name, email } = response.data;
-          console.log('구글 로그인 성공:', user_name, email);
-    
-          localStorage.setItem('access_token', access_token);
-    
-          navigate('/');
         } catch (error) {
-          if (error.response && error.response.status === 401) {
-            alert('유효하지 않은 google 토큰입니다.');
-          } else {
-            alert('구글 로그인 중 오류가 발생했습니다.');
-            console.error(error);
-          }
+            if (error.response) {
+                switch(error.response.status) {
+                    case 401:
+                        alert('이메일 또는 비밀번호가 올바르지 않습니다.');
+                        break;
+                    case 400:
+                        alert(error.response.data.error || '입력값을 확인해주세요.');
+                        break;
+                    default:
+                        alert('로그인 중 오류가 발생했습니다.');
+                }
+            } else {
+                alert('서버와 연결할 수 없습니다.');
+            }
+            console.error('Login error:', error);
         }
-        */
-        navigate('/');
+    };
+
+    const handleGoogleLogin = () => {
+      window.location.href = "http://localhost:8080/auth/google";
     };
 
   return (
@@ -113,7 +90,7 @@ const Login = () => {
             로그인
             </button>
 
-            <button type="button" className="google-button">
+            <button type="button" className="google-button" onClick={handleGoogleLogin}>
             구글 계정으로 로그인
             </button>
         </div>
