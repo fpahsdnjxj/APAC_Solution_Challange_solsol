@@ -4,10 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.solsoll.ttarang.backend.domain.Export;
 import com.solsoll.ttarang.backend.domain.Message;
 import com.solsoll.ttarang.backend.domain.ProjectForm;
-import com.solsoll.ttarang.backend.dto.AIMessageRequestDto;
-import com.solsoll.ttarang.backend.dto.AIMarketingRequestDto;
-import com.solsoll.ttarang.backend.dto.PlanningChatRequest;
-import com.solsoll.ttarang.backend.dto.SimpleMessageDto;
+import com.solsoll.ttarang.backend.dto.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -66,13 +63,26 @@ public class AIIntegrationService {
         return response;
     }
 
-    public ExportAIResponse generatePlanningFinalExport(List<Message> messages, ProjectForm defaultInfo) {
-
-        return new ExportAIResponse("export new things", List.of(), List.of());
+    public ExportAIResponse generatePlanningFinalExport(AIPlanningExportRequestDto exportRequestDto) {
+        ExportAIResponse response=webClient.post()
+                .uri("http://localhost:8000/api/ai/planning_export")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(exportRequestDto)
+                .retrieve()
+                .bodyToMono(ExportAIResponse.class)
+                .block();
+        return response;
     }
 
-    public ExportAIResponse generateMarketingFinalExport(List<Message> messages, Export defaultInfo) {
-        return new ExportAIResponse("export new things", List.of(), List.of());
+    public ExportAIResponse generateMarketingFinalExport(AIMarketingExportRequestDto exportRequestDto) {
+        ExportAIResponse response=webClient.post()
+                .uri("http://localhost:8000/api/ai/marketing_export")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(exportRequestDto)
+                .retrieve()
+                .bodyToMono(ExportAIResponse.class)
+                .block();
+        return response;
     }
 }
 

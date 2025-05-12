@@ -154,26 +154,62 @@ public class ChatService {
             throw new CustomException(ErrorCode.UNAUTHORIZED);
         }
 
-        List<Message> messages = messageService.findMessagesByChat(chat);
+        List<SimpleMessageDto> previous_message= new ArrayList<>();;
+        messageService.findMessagesByChat(chat).forEach(message -> {
+            if (message.getSenderRole() != null && message.getContent() != null) {
+                SimpleMessageDto dto = new SimpleMessageDto();
+                dto.setSenderRole(message.getSenderRole().name());
+                dto.setContentText(message.getContent());
+                dto.setLinks(message.getLinks() != null ? message.getLinks() : new ArrayList<>());
+                dto.setImageUrls(message.getImageUrls() != null ? message.getImageUrls() : new ArrayList<>());
+                previous_message.add(dto);
+            }
+        });
 
         chat.setCompleted(true);
         chatRepository.save(chat);
-
         Chattype type = chat.getType();
-
         ExportAIResponse aiResult;
 
         if (type == Chattype.planning) {
             ProjectForm defaultInfo = projectFormRepository.findByChat(chat)
                     .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, "No ProjectForm found for chat id " + chatId));
+            PlanningChatRequest planningChatRequest = new PlanningChatRequest();
+            planningChatRequest.setTitle(defaultInfo.getTitle());
+            planningChatRequest.setLocation(defaultInfo.getLocation());
+            planningChatRequest.setDetailInfo(defaultInfo.getDetail_info());
+            planningChatRequest.setImageUrls(defaultInfo.getPhoto_urls());
+            planningChatRequest.setKeywords(defaultInfo.getKeywords());
+            planningChatRequest.setAvailableDates(defaultInfo.getAvailable_dates());
 
-            aiResult =aiIntegrationService.generatePlanningFinalExport(messages, defaultInfo);
+            try {
+                planningChatRequest.setDuration(defaultInfo.getDuration());
+            } catch (NumberFormatException e) {
+                planningChatRequest.setDuration("no duration"); // or throw exception if required
+            }
+            planningChatRequest.setPrice((int) defaultInfo.getPrice());
+            planningChatRequest.setPolicy(defaultInfo.getPolicy());
+
+            AIPlanningExportRequestDto exportRequestDto = new AIPlanningExportRequestDto();
+            exportRequestDto.setDefaultInfo(planningChatRequest);
+            exportRequestDto.setCompleted(true);
+            exportRequestDto.setPreviousMessageList(previous_message);
+
+            aiResult =aiIntegrationService.generatePlanningFinalExport(exportRequestDto);
+
 
         } else if (type == Chattype.marketing) {
             Export defaultInfo = exportRepository.findByChat(chat)
                     .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, "No Export found for chat id " + chatId));
-
-            aiResult =aiIntegrationService.generateMarketingFinalExport(messages, defaultInfo);
+            AIMarketingRequestDto aiMarketingRequest = new AIMarketingRequestDto();
+            aiMarketingRequest.setContent(defaultInfo.getContent());
+            aiMarketingRequest.setLinks(defaultInfo.getLinks());
+            aiMarketingRequest.setImageUrls(defaultInfo.getImageUrls());
+            AIMarketingExportRequestDto exportRequestDto = new AIMarketingExportRequestDto();
+            exportRequestDto.setCompleted(true);
+            exportRequestDto.setPreviousMessageList(previous_message);
+            exportRequestDto.setDefaultInfo(aiMarketingRequest);
+            aiResult =aiIntegrationService.generateMarketingFinalExport(exportRequestDto);
 
         } else {
             throw new CustomException(ErrorCode.BAD_REQUEST, "Invalid chat type for final export");
@@ -185,8 +221,12 @@ public class ChatService {
         finalExport.setType(type);
         finalExport.setTitle(chat.getTitle());
         exportRepository.save(finalExport);
-        finalExport.setImageUrls(new ArrayList<>(aiResult.getImageUrls()));
-        finalExport.setLinks(new ArrayList<>(aiResult.getLinks()));
+        finalExport.setImageUrls(
+                aiResult.getImageUrls() != null ? new ArrayList<>(aiResult.getImageUrls()) : new ArrayList<>()
+        );
+        finalExport.setLinks(
+                aiResult.getLinks() != null ? new ArrayList<>(aiResult.getLinks()) : new ArrayList<>()
+        );
         exportRepository.save(finalExport);
     }
 }

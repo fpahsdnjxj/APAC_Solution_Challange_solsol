@@ -2,10 +2,12 @@ package com.solsoll.ttarang.backend.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import lombok.Setter;
 
 import java.util.List;
 
 @Data
+@Setter
 public class PlanningChatRequest {
     private String title;
     @JsonProperty("detail_info")
