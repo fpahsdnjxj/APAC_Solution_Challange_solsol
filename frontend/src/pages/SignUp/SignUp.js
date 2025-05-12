@@ -79,6 +79,10 @@ const SignUp = () => {
         }
     };
 
+    const handleGoogleSignUp = () => {
+      window.location.href = "http://localhost:8080/auth/google";
+    };
+
     return (
         <div className="sign-up-wrapper">
           <div className="logo-box">
@@ -158,7 +162,7 @@ const SignUp = () => {
     
               <div className="button-row">
                 <button type="submit" className="signup-button">회원가입</button>
-                <button type="button" className="google-signup-button">구글로 회원가입하기</button>
+                <button type="button" className="google-signup-button" onClick={handleGoogleSignUp}>구글로 회원가입하기</button>
               </div>
     
               <div className="login-link">

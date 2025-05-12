@@ -55,44 +55,8 @@ const Login = () => {
         }
     };
 
-    const handleGoogleLogin = async () => {
-        const id_token = prompt('구글에서 받은 id_token을 입력하세요:');
-    
-        if (!id_token) return;
-    
-        try {
-            const response = await axios.post('/auth/google', {
-                id_token: id_token
-            }, {
-                headers: { 'Content-Type': 'application/json' }
-            });
-
-            const { accessToken, refreshToken } = response.data;
-            if (accessToken) {
-                localStorage.setItem('accessToken', accessToken);
-                if (refreshToken) {
-                    localStorage.setItem('refreshToken', refreshToken);
-                }
-                alert('로그인되었습니다.');
-                navigate('/');
-            }
-        } catch (error) {
-            if (error.response) {
-                switch(error.response.status) {
-                    case 401:
-                        alert('유효하지 않은 Google 토큰입니다.');
-                        break;
-                    case 400:
-                        alert(error.response.data.error || '입력값을 확인해주세요.');
-                        break;
-                    default:
-                        alert('로그인 중 오류가 발생했습니다.');
-                }
-            } else {
-                alert('서버와 연결할 수 없습니다.');
-            }
-            console.error('Google login error:', error);
-        }
+    const handleGoogleLogin = () => {
+      window.location.href = "http://localhost:8080/auth/google";
     };
 
   return (
@@ -126,7 +90,7 @@ const Login = () => {
             로그인
             </button>
 
-            <button type="button" className="google-button">
+            <button type="button" className="google-button" onClick={handleGoogleLogin}>
             구글 계정으로 로그인
             </button>
         </div>
