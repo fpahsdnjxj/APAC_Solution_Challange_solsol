@@ -1,4 +1,4 @@
-from ai.marketing_trends import integrate_marketing_trends
+from .marketing_trends import integrate_marketing_trends
 
 #기획서 프롬프트 
 tourism_plan_prompt = """
