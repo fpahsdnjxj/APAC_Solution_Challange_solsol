@@ -2,20 +2,19 @@ package com.solsoll.ttarang.backend.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
-@Getter
+@Data
+@NoArgsConstructor
 @AllArgsConstructor
-public class ExportResponseDto {
-    private String type;
+@Setter
+public class AIMarketingRequestDto {
     private String content;
     @JsonProperty("image_urls")
     private List<String> imageUrls;
-    @JsonProperty("link_urls")
-    private List<String> linkUrls;
-    private LocalDateTime createdAt;
+    private List<String> links;
 }
-
