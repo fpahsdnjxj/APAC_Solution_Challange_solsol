@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 @RestController
 @RequiredArgsConstructor
@@ -44,8 +46,12 @@ public class AuthController {
     }
 
     @GetMapping("/google/callback")
-    public ResponseEntity<?> handleGoogleCallback(@RequestParam("code") String code) {
+    public void handleGoogleCallback(@RequestParam("code") String code, HttpServletResponse response) throws IOException  {
         TokenResponseDto token = userService.handleGoogleLogin(code);
-        return ResponseEntity.ok(token);
+
+        String frontendRedirectUrl = "http://localhost:3000/oauth-success" +
+                "?accessToken=" + URLEncoder.encode(token.getAccessToken(), StandardCharsets.UTF_8);
+
+        response.sendRedirect(frontendRedirectUrl);
     }
 }
