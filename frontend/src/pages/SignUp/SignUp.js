@@ -42,26 +42,41 @@ const SignUp = () => {
             alert('비밀번호가 일치하지 않습니다.');
             return;
         }
-        /*
+
         try {
             const response = await axios.post('/auth/signup', formData, {
                 headers: {
-                    'Content-Type' : 'application/json',
+                    'Content-Type': 'application/json',
                 },
             });
-            alert(response.data.message);
-        } catch(error) {
-            if(error.response && error.response.status === 400) {
-                alert(error.response.data.error);
+            
+            const { accessToken, refreshToken } = response.data;
+            if (accessToken) {
+                localStorage.setItem('accessToken', accessToken);
+                if (refreshToken) {
+                    localStorage.setItem('refreshToken', refreshToken);
+                }
+                alert('회원가입이 완료되었습니다.');
+                navigate('/');
             } else {
-                alert('회원가입 중 오류가 발생했습니다.');
+                alert('회원가입은 완료되었으나 토큰을 받지 못했습니다.');
+            }
+        } catch(error) {
+            if(error.response) {
+                switch(error.response.status) {
+                    case 400:
+                        alert(error.response.data.error || '입력값을 확인해주세요.');
+                        break;
+                    case 409:
+                        alert('이미 존재하는 이메일입니다.');
+                        break;
+                    default:
+                        alert('회원가입 중 오류가 발생했습니다.');
+                }
+            } else {
+                alert('서버와 연결할 수 없습니다.');
             }
         }
-        */
-        console.log('회원가입 데이터:', formData);
-        alert('더미 회원가입 완료! (실제 서버와 연결되지는 않음)');
-        navigate('/');
-
     };
 
     return (
