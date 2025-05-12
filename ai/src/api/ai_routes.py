@@ -1,5 +1,5 @@
 from schema.response import Export, GenerateChat, MessageResponse
-from schema.request import MarketingRequest, Message, PreviousChatInfo
+from schema.request import MarketingExportRequest, MarketingRequest, Message, PlanningExportRequest, PreviousChatInfo
 from schema.request import PlanningRequest
 from fastapi import APIRouter, HTTPException
 from ai_module.gemini_client import generate_chat_response, generate_export_summary, generate_marketing_strategy, generate_tourism_plan
@@ -11,31 +11,38 @@ router = APIRouter(prefix="/api/ai")
 
 @router.post("/planning")
 async def planning(request: PlanningRequest):
+    """
     try:
         info = request.dict()
         plan_markdown = generate_tourism_plan(info)
         meta = generate_title_and_keywords_from_markdown(plan_markdown)
-        return GenerateChat(meta["title"], meta["keyword"])
+        return GenerateChat(title=meta["title"], keywords=meta["keyword"])
     
     except Exception as e:
         print(f"❌ Error: {e}")
         raise HTTPException(status_code=500, detail="An error occurred while generating the plan")
+        """
+    return GenerateChat(title="연결 확인용", keywords=[])
 
 
 @router.post("/marketing")
 async def marketing(request: MarketingRequest):
+    """
     try:
         info=request.dict()
         marketing_markdown=generate_marketing_strategy(info)
         meta = generate_title_and_keywords_from_markdown(marketing_markdown)
-        return GenerateChat(meta["title"], meta["keyword"])
+        return GenerateChat(title=meta["title"], keywords=meta["keyword"])
 
     except Exception as e:
         print(f"Error: {e}")
         raise HTTPException(status_code=500, detail="An error occurred while generating the marketing chat")
+    """
+    return GenerateChat(title="연결 확인용", keywords=[])
 
 @router.post("/message")
 async def send_message(request: PreviousChatInfo):
+    """
     try:
         message = generate_chat_response(request.previous_message_list, request.current_message)
         response_message = Message(
@@ -49,17 +56,41 @@ async def send_message(request: PreviousChatInfo):
     except Exception as e:
         print(f"Error: {e}")
         raise HTTPException(status_code=500, detail="An error occurred while generating the response")
+    """
+    response_message = Message(
+            sender_role="ai",
+            content_text="연결 확인용",
+            links=[],
+            image_urls=[]
+        )
+    return MessageResponse(message=response_message)
 
-@router.post("/export")
-async def export_final(request: PreviousChatInfo):
+@router.post("/planning_export")
+async def export_final(request: PlanningExportRequest):
+    """
     try:
         message=generate_export_summary(PreviousChatInfo.previous_message_list, PreviousChatInfo.current_message)
-        return Export(message, [], [])
+        return Export(content=message, image_urls=[], links=[])
     
     except Exception as e:
         print(f"Error: {e}")
         raise HTTPException(status_code=500, detail="An error occurred while generating the response")
+    """
+    return Export(content="연결 확인용", image_urls=[], links=[])
 
+@router.post("/marketing_export")
+async def export_final(request: MarketingExportRequest):
+    """
+    try:
+        message=generate_export_summary(PreviousChatInfo.previous_message_list, PreviousChatInfo.current_message)
+        return Export(content=message, image_urls=[], links=[])
     
+    except Exception as e:
+        print(f"Error: {e}")
+        raise HTTPException(status_code=500, detail="An error occurred while generating the response")
+    """
+    return Export(content="연결 확인용", image_urls=[], links=[])
+
+
     
 

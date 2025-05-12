@@ -2,13 +2,13 @@ from typing import List
 from pydantic import BaseModel
 from .request import Message
 
-class GenerateChat:
+class GenerateChat(BaseModel):
     title: str
-    keyword: list[str]
-class MessageResponse:
+    keywords: list[str]
+class MessageResponse(BaseModel):
     message: Message
 
-class Export:
+class Export(BaseModel):
     content: str
     image_urls:list[str]
     links: list[str]

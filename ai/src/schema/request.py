@@ -27,3 +27,13 @@ class PreviousChatInfo(BaseModel):
     is_completed: bool
     previous_message_list: list[Message]
     current_message: Message
+
+class PlanningExportRequest(BaseModel):
+    is_completed: bool
+    previous_message_list: list[Message]
+    default_info:PlanningRequest
+
+class MarketingExportRequest(BaseModel):
+    is_completed: bool
+    previous_message_list: list[Message]
+    default_info:MarketingRequest

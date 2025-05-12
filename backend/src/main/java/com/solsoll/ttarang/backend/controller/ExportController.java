@@ -73,6 +73,7 @@ public class ExportController {
 
     @PostMapping("/{chatid}/marketing_chat")
     public ResponseEntity<?> createMarketingChat(@AuthenticationPrincipal org.springframework.security.core.userdetails.User userDetails, @PathVariable("chatid") Long chatId){
+        System.out.println("Received request for chatId: " + chatId);
         try {
             Long userId = getUserIdFromEmail(userDetails.getUsername());
 
