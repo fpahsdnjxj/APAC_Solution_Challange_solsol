@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -105,20 +106,43 @@ public class ChatService {
         userMessage.setContent(request.getContentText());
         userMessage.setImageUrls(request.getImageUrls());
         messageRepository.save(userMessage);
-
-        AIResponse aiResult = aiIntegrationService.sendMessageToAI(chat.getId(), request);
+        SimpleMessageDto currentmessage=new SimpleMessageDto(
+                userMessage.getSenderRole().name(),
+                userMessage.getContent(),
+                Collections.emptyList(),
+                userMessage.getImageUrls()
+        );
+        List<SimpleMessageDto> previous_message= new ArrayList<>();;
+        messageService.findMessagesByChat(chat).forEach(message -> {
+                if (message.getSenderRole() != null && message.getContent() != null) {
+                    SimpleMessageDto dto = new SimpleMessageDto();
+                    dto.setSenderRole(message.getSenderRole().name());
+                    dto.setContentText(message.getContent());
+                    dto.setLinks(message.getLinks() != null ? message.getLinks() : new ArrayList<>());
+                    dto.setImageUrls(message.getImageUrls() != null ? message.getImageUrls() : new ArrayList<>());
+                    previous_message.add(dto);
+            }
+        });
+        System.out.println(previous_message);
+        System.out.println(currentmessage);
+        AIMessageRequestDto aimessagerequest=new AIMessageRequestDto(
+            false,
+                previous_message,
+                currentmessage
+        );
+        AIResponse aiResult = aiIntegrationService.sendMessageToAI(aimessagerequest);
 
         Message aiMessage = new Message();
         aiMessage.setChat(chat);
         aiMessage.setSenderRole(Senderrole.ai);
-        aiMessage.setContent(aiResult.getContent());
-        aiMessage.setLinks(aiResult.getLinks());
+        aiMessage.setContent(aiResult.getMessage().getContentText());
+        aiMessage.setLinks(aiResult.getMessage().getLinks());
         messageRepository.save(aiMessage);
 
         return new ChatResponseDto(
                 "ai",
-                aiResult.getContent(),
-                aiResult.getLinks()
+                aiResult.getMessage().getContentText(),
+                aiResult.getMessage().getLinks()
         );
     }
 

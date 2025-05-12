@@ -1,14 +1,17 @@
 package com.solsoll.ttarang.backend.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.solsoll.ttarang.backend.domain.Export;
 import com.solsoll.ttarang.backend.domain.Message;
 import com.solsoll.ttarang.backend.domain.ProjectForm;
+import com.solsoll.ttarang.backend.dto.AIMessageRequestDto;
 import com.solsoll.ttarang.backend.dto.AIMarketingRequestDto;
-import com.solsoll.ttarang.backend.dto.ChatRequestDto;
 import com.solsoll.ttarang.backend.dto.PlanningChatRequest;
+import com.solsoll.ttarang.backend.dto.SimpleMessageDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -16,11 +19,15 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class AIIntegrationService {
 
-    WebClient webClient=WebClient.create();
+    private final WebClient webClient=WebClient.create();
+    private final MessageService messageService;
+
 
     public AIChatCreateResponse processPlanningChat(PlanningChatRequest request) {
+
         AIChatCreateResponse response=webClient.post()
                 .uri("http://localhost:8000/api/ai/planning")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -48,11 +55,11 @@ public class AIIntegrationService {
     }
 
 
-    public AIResponse sendMessageToAI(Long chatid, ChatRequestDto request){
+    public AIResponse sendMessageToAI(AIMessageRequestDto request){
         AIResponse response=webClient.post()
                 .uri("http://localhost:8000/api/ai/message")
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(request)
+                .bodyValue( request)
                 .retrieve()
                 .bodyToMono(AIResponse.class)
                 .block();
@@ -60,6 +67,7 @@ public class AIIntegrationService {
     }
 
     public ExportAIResponse generatePlanningFinalExport(List<Message> messages, ProjectForm defaultInfo) {
+
         return new ExportAIResponse("export new things", List.of(), List.of());
     }
 
@@ -80,8 +88,7 @@ class AIChatCreateResponse {
 @AllArgsConstructor
 @NoArgsConstructor
 class AIResponse{
-    private String content;
-    private List<String> links;
+    private SimpleMessageDto message;
 }
 
 @Data
