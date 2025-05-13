@@ -35,7 +35,9 @@ const Form = () => {
 
   return (
     <div className="form-container">
-      <button className="back-button"onClick={() => navigate('/')}>←</button>
+      <button className="back-button"onClick={() => navigate('/')}>
+        <img src="/back.png" alt="돌아가기" />
+      </button>
       <h2 className="form-title">폼 작성</h2>
       <form className="main-form" onSubmit={handleSubmit}>
         <label>상품명*</label>
