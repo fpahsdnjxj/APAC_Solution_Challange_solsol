@@ -37,7 +37,7 @@ def generate_marketing_strategy(info: dict) -> str:
     prompt = marketing_strategy_prompt_template.format(
         content=info["content"],
         image_urls="\n".join(info["image_urls"]),
-        links="\n".join(info["links"]),
+        links="\n".join(info["links"])
     )
     try:
         response = gemini_client.generate_content(prompt)
