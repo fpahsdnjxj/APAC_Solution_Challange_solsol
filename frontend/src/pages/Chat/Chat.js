@@ -15,7 +15,29 @@ const Chat = () => {
     const messageEndRef = useRef(null); 
 
     //더미 부분
+    const DUMMY_MESSAGE_LIST = [
+        {
+          sender_role: 'user',
+          content_text: '제주 서귀포시 유채꽃 축제는 언제 열리니?',
+          links: [],
+          image_urls: [],
+        },
+        {
+          sender_role: 'ai',
+          content_text: '제주 유채꽃 축제는 매년 4월에 열립니다. [[출처1]]',
+          links: ['https://kto.or.kr/festival/jeju_canola'],
+          image_urls: [],
+        },
+        {
+          sender_role: 'user',
+          content_text: '해당 축제랑 이 상품을 어떻게 연결시킬 수 있을까? 이건 내 민박집에 유채꽃이 핀 사진이야. [[사진1]]',
+          links: [],
+          image_urls: ['https://cdn.example.com/uploads/2025/04/jeju-canola-field-01.jpg'],
+        },
+    ];
+
     const DUMMY_USER_MESSAGE = {
+        sender_role: 'user',
         content_text: '제주 서귀포시 유채꽃 축제는 언제 열리니?',
         image_urls: []
       };
@@ -35,7 +57,7 @@ const Chat = () => {
   
       const newMessages = [
         ...messages,
-        { text: userMessage },
+        { sender_role: 'user', text: userMessage },
       ];
       setMessages(newMessages);
       setUserMessage('');
@@ -103,6 +125,38 @@ const Chat = () => {
     };
 
     useEffect(() => {
+        const fetchMessages = async () => {
+            try {
+            /*
+              const response = await axios.get(`/chat/${chat_id}`, {
+                headers: {
+                  Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+                  'Content-Type': 'application/json',
+                },
+              });
+              setMessages(response.data.message_list);
+              */
+
+              //더미임
+              setMessages(DUMMY_MESSAGE_LIST);
+            } catch (error) {
+              if (error.response && error.response.status === 401) {
+                setError('Access token is missing or invalid');
+            } else if (error.response && error.response.status === 404) {
+                setError(`Chat with id ${chat_id} not found`);
+              } else if (error.response && error.response.status === 500) {
+                setError('An error occurred while retrieving messages');
+              } else {
+                setError('An unexpected error occurred. Please try again later.');
+              }
+            }
+          };
+      
+          // 메시지가 없다면 API 호출
+          if (messages.length === 0) {
+            fetchMessages();
+          }
+      
         messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages]);
 
@@ -183,9 +237,9 @@ const Chat = () => {
                 {messages.map((message, index) => (
                   <div
                     key={index}
-                    className={`message ${index % 2 === 0 ? 'user-message' : 'ai-message'}`}
+                    className={`message ${message.sender_role === 'user' ? 'user-message' : 'ai-message'}`}
                   >
-                    {message.text}
+                    {message.content_text}
                     {message.links && message.links.length > 0 && (
                       <div className="ai-links">
                         {message.links.map((link, idx) => (

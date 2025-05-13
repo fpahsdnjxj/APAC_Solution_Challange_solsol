@@ -213,7 +213,7 @@ const Home = () => {
                       <div
                         key={index}
                         className={`plan-card ${plan.type}`}
-                        onClick={() => navigate('/plan')}
+                        onClick={() => navigate(`/plan/${plan.chat_id}`)}
                       >
                         <div className="card-title">{plan.title}</div>
                         <div className="card-description">{plan.content}</div>
