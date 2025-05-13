@@ -3,8 +3,6 @@ FROM python:3.11.5
 WORKDIR /app
 
 # 환경 변수 선언
-ENV GEMINI_API_KEY=""
-
 COPY requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
