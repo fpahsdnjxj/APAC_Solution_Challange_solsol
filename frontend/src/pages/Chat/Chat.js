@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef,useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Chat.css';
@@ -12,7 +12,9 @@ const Chat = () => {
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');  
+    const messageEndRef = useRef(null); 
 
+    //더미 부분
     const DUMMY_USER_MESSAGE = {
         content_text: '제주 서귀포시 유채꽃 축제는 언제 열리니?',
         image_urls: []
@@ -40,6 +42,7 @@ const Chat = () => {
   
       setLoading(true);
 
+      //더미임
       setTimeout(() => {
         const aiResponse = {
             sender_role: 'ai',
@@ -91,6 +94,17 @@ const Chat = () => {
         */
       setLoading(false);
     };
+
+    const handleKeyDown = (e) => {
+        if (e.key === "Enter" && userMessage.trim() !== "") {
+          e.preventDefault();  // 기본 엔터 동작(줄바꿈)을 방지
+          handleSendMessage();
+        }
+    };
+
+    useEffect(() => {
+        messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, [messages]);
   
     return (
         <div className="chat-wrapper">
@@ -114,10 +128,11 @@ const Chat = () => {
               <div className="chat-input-wrapper">
                 <input
                   type="text"
-                  placeholder="채팅을 입력해주세요"
+                  placeholder="Type your message..."
                   className="chat-input"
                   value={userMessage}
                   onChange={handleMessageChange}
+                  onKeyDown={handleKeyDown} 
                 />
                 <button className="chat-submit" onClick={handleSendMessage}>
                   <img src="/send.png" alt="icon" />
@@ -144,14 +159,16 @@ const Chat = () => {
                     )}
                   </div>
                 ))}
+                 <div ref={messageEndRef} />
               </div>
               <div className="chat-input-wrapper">
                 <input
                   type="text"
-                  placeholder="채팅을 입력해주세요"
+                  placeholder="Type your message..."
                   className="chat-input"
                   value={userMessage}
                   onChange={handleMessageChange}
+                  onKeyDown={handleKeyDown} 
                 />
                 <button className="chat-submit" onClick={handleSendMessage}>
                   <img src="/send.png" alt="icon" />
@@ -162,7 +179,7 @@ const Chat = () => {
                 <button className="pdf-button">
                     <img src="/doc.png" alt="icon" />
                 </button>
-                <button className="finish-button">
+                <button className="finish-button" onClick={() => navigate('/plan')}>
                     <img src="/check.png" alt="icon" />
                 </button>
               </div>
