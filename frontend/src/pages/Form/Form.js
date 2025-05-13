@@ -10,7 +10,7 @@ const Form = () => {
     description: '',
     location: '',
     photo: null,
-    photoUrl: '',
+    photoUrls: [],
     keywords: '',
     date: '',
     duration: '',
@@ -24,40 +24,111 @@ const Form = () => {
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     if (name === 'photo' && files.length > 0) {
-      const file = files[0];
-      setFormData(prev => ({ ...prev, photo: file }));
-      const uploadImage = async () => {
-        const token = localStorage.getItem('access_token');
+      const selectedFiles = Array.from(files);
+
+      //백엔드 연결 시 삭제
+      const urls = selectedFiles.map(file => ({
+        file,
+        preview: URL.createObjectURL(file),
+      }));
+  
+      setFormData(prev => ({
+        ...prev,
+        photoUrls: [...prev.photoUrls, ...urls]
+      }));
+  
+      setUploadError('');
+
+      /*
+      const token = localStorage.getItem('access_token');
+      const uploads = selectedFiles.map(async (file) => {
         const formDataToSend = new FormData();
         formDataToSend.append('file', file);
+        const res = await axios.post('/upload/image', formDataToSend, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        return res.data.url;
+      });
 
-        try {
-          const response = await axios.post('/upload/image', formDataToSend, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              'Content-Type': 'multipart/form-data',
-            },
-          });
-
-          const { url } = response.data;
-          setFormData(prev => ({ ...prev, photoUrl: url }));
-          setUploadError('');
-        } catch (error) {
-          console.error('이미지 업로드 실패:', error);
-          setUploadError('이미지 업로드에 실패했습니다.');
-        }
-      };
-      uploadImage();
+      const uploadedUrls = await Promise.all(uploads);
+      setFormData(prev => ({
+        ...prev,
+        photoUrls: [...prev.photoUrls, ...uploadedUrls]
+      }));
+      */
 
     } else {
       setFormData(prev => ({ ...prev, [name]: value }));
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleRemoveImage = (index) => {
+    const newPhotoUrls = [...formData.photoUrls];
+    newPhotoUrls.splice(index, 1);
+    setFormData(prev => ({
+      ...prev,
+      photoUrls: newPhotoUrls,
+    }));
+  };
+  
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('제출된 데이터:', formData);
-    navigate('/chat/:id');
+
+    const formattedSchedule = formatSchedule(schedule);
+    const payload = {
+      title: formData.name,
+      detail_info: formData.description,
+      location: formData.location,
+      image_urls: formData.photoUrls.map(img => img.preview), // 실제는 서버에서 받는 URL
+      keywords: formData.keywords.split(',').map(k => k.trim()).filter(Boolean),
+      available_dates: formattedSchedule, // 임시 하드코딩
+      duration: formatDuration(formData.duration), // TODO: 시간 선택값 연결
+      price: Number(formData.price),
+      policy: formData.policy,
+      operating_schedule:formatSchedule(schedule),
+    };
+    if (!formData.photoUrls.length) {
+      alert('이미지 업로드가 아직 완료되지 않았습니다.');
+      return;
+    }    
+  
+    console.log('제출 데이터:',payload);
+
+    /*
+    const token = localStorage.getItem('access_token');
+    const formToSend = new FormData();
+
+    formToSend.append('title', formData.name);
+    formToSend.append('detail_info', formData.description);
+    formToSend.append('location', formData.location);
+    formToSend.append('image_urls', JSON.stringify([formData.photoUrls]));
+    formToSend.append('keywords', JSON.stringify(formData.keywords.split(',')));
+    formToSend.append('available_dates', formattedSchedule); // 날짜 추후 가공
+    formToSend.append('duration', formatDuration(formData.hours, formData.minutes));
+    formToSend.append('price', parsedPrice);
+    formToSend.append('policy', formData.policy);
+
+    try {
+      const response = await axios.post('/planing_chat', formToSend, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      const { chat_id } = response.data;
+      navigate(`/chat/${chat_id}`); // Chat 페이지로 이동
+    } catch (error) {
+      console.error('제출 오류:', error);
+      alert('제출 중 오류가 발생했습니다.');
+    }
+    */
+  
+    navigate('/chat');
   };
 
   
@@ -107,6 +178,23 @@ const Form = () => {
     return Number(num).toLocaleString() + ' 원';
   };
 
+  const formatSchedule = (scheduleObj) => {
+    return Object.entries(scheduleObj)
+      .map(([day, { active, start, end }]) => {
+        return active ? `${day} ${start}~${end}` : `${day} 운영안함`;
+      })
+      .join(', ');
+  };
+  
+  const formatDuration = (duration) => {
+    const [hours, minutes] = duration.split(':').map(val => parseInt(val, 10));
+    const parts = [];
+    if (hours > 0) parts.push(`${hours}시간`);
+    if (minutes > 0) parts.push(`${minutes}분`);
+    return parts.join(' ') || '0분';
+  };
+  
+
   return (
     <div className="form-container">
       <button className="back-button"onClick={() => navigate('/')}>
@@ -126,16 +214,29 @@ const Form = () => {
         <label>사진 첨부*</label>
         <div className="photo-upload">
           <label className="photo-box">
-            +
+            <span className='plus-sign'>+</span>
             <input type="file" name="photo" accept="image/*" onChange={handleChange} required />
           </label>
             {/* 업로드된 이미지 미리보기 */}
-            {formData.photoUrl && (
-              <img
-                src={formData.photoUrl}
-                alt="업로드된 사진"
-                style={{ width: '200px', height: '200px', objectFit: 'cover', marginTop: '10px' }}
-              />
+            {formData.photoUrls.length > 0 && (
+              <div className="preview-wrapper multi">
+                {formData.photoUrls.map((img, index) => (
+                  <div key={index} className="preview-box">
+                    <img
+                      src={img.preview}
+                      alt={`업로드 ${index + 1}`}
+                      className='preview-image'
+                    />
+                    <button
+                      type="button"
+                      className="remove-image-button"
+                      onClick={() => handleRemoveImage(index)}
+                    >
+                      삭제
+                    </button>
+                  </div>
+                ))}
+              </div>
             )}
 
             {/* 오류 표시 */}
@@ -175,7 +276,7 @@ const Form = () => {
 
                     <input
                       type="time"
-                              className="time-input"
+                      className="time-input"
                       value={schedule[day].end}
                       onChange={(e) => handleTimeChange(day, 'end', e.target.value)}
                       disabled={!schedule[day].active}
@@ -205,7 +306,7 @@ const Form = () => {
                 
               </div>
               <label>가격</label>
-              <input type="text" name="price" value={formatPrice(formData.price)} onChange={handlePriceChange} placeholder="가격을 입력하세요" inputMode="numeric" />
+              <input type="text" name="price" value={formatPrice(formData.price)} onChange={handlePriceChange} inputMode="numeric" />
             </div>
 
             <label>규칙/취소정책</label>
@@ -213,7 +314,7 @@ const Form = () => {
           </div>
         )}
       </form>
-      <button type="submit" className="submit-button">제출하기</button>
+      <button type="submit" className="submit-button" onClick={handleSubmit}>제출하기</button>
     </div>
   );
 };
