@@ -1,7 +1,7 @@
 # backend/Dockerfile
 
 # 1단계: 빌드
-FROM gradle:7.6.0-jdk21 AS builder
+FROM gradle:7.6.0-jdk17 AS builder
 WORKDIR /app
 COPY . .
 
