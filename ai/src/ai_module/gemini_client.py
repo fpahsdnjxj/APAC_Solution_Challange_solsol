@@ -35,15 +35,9 @@ def generate_tourism_plan(info: dict) -> str:
 # 마케팅
 def generate_marketing_strategy(info: dict) -> str:
     prompt = marketing_strategy_prompt_template.format(
-        title=info["title"],
-        detail_info=info["detail_info"],
-        location=info["location"],
+        content=info["content"],
         image_urls="\n".join(info["image_urls"]),
-        keywords=", ".join(info["keywords"]),
-        available_dates=info["available_dates"],
-        duration=info["duration"],
-        price=info["price"],
-        policy=info["policy"]
+        links="\n".join(info["links"]),
     )
     try:
         response = gemini_client.generate_content(prompt)
