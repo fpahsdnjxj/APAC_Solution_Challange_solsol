@@ -7,39 +7,49 @@ import './Home.css';
 
 // 더미 기획서 데이터 (로컬 테스트용)
 const DUMMY_EXPORTS = [
-    {
-      title: '인스타 게시물',
-      type: 'planning',
-      content: '내용을 한줄만 표시...',
-    },
-    {
-        title: '인스타 게시물',
-        type: 'planning',
-        content: '내용을 한줄만 표시...',
-    },
-    {
-      title: '인스타 게시물',
-      type: 'marketing',
-      content: '내용을 한줄만 표시...',
-    },
-    {
-      title: '인스타 게시물',
-      type: 'marketing',
-      content: '내용을 한줄만 표시...',
-    },
-    {
-        title: '인스타 게시물',
-        type: 'marketing',
-        content: '내용을 한줄만 표시...',
-      },
+  {
+    "chat_id":12342,
+     "title": "인스타 게시물",
+     "type": "planning",
+     "content": "내용을 한줄만 표시..."
+   },
+   {
+      "chat_id":123342,
+     "title": "인스타 게시물",
+     "type": "marketing",
+     "content": "내용을 한줄만 표시..."
+   },
+   {
+      "chat_id":122635632,
+     "title": "인스타 게시물",
+     "type": "marketing",
+     "content": "내용을 한줄만 표시..."
+   }
 ];
   
-const DUMMY_CHATS = Array.from({ length: 10 }, (_, i) => ({
-    chat_id: 1000 + i,
-    title: `인스타 게시물 ${i + 1}`,
-    type: i % 2 === 0 ? 'marketing' : 'planning',
-    keywords: [`키워드${i + 1}`, `키워드${i + 2}`],
-}));
+const DUMMY_CHATS = [
+  {
+    chat_id: 12342,
+    title: "인스타 게시물",
+    type: "planning",
+    keywords: ["키워드1", "키워드2"],
+    update_date: "2025-12-10 19:00:00"
+  },
+  {
+    chat_id: 12343,
+    title: "인스타 게시물",
+    type: "marketing",
+    keywords: ["키워드1", "키워드2"],
+    update_date: "2025-12-10 19:00:00"
+  },
+  {
+    chat_id: 12344,
+    title: "인스타 게시물",
+    type: "marketing",
+    keywords: ["키워드1", "키워드2"],
+    update_date: "2025-12-10 19:00:00"
+  }
+];
   
 const Home = () => {
     const navigate = useNavigate();
@@ -48,6 +58,7 @@ const Home = () => {
     const [error, setError] = useState(null);
     const [filter, setFilter] = useState('전체');
     const [currentPage, setCurrentPage] = useState(0); 
+    const [cardsPerPage, setCardsPerPage] = useState(5); // 기본 카드 수
 
     const filteredList = exportList.filter(plan => {
         if (filter === '전체') return true;
@@ -56,12 +67,41 @@ const Home = () => {
         return true;
     });
 
-    const cardsPerPage = 6;
+
     const maxPage = Math.ceil(filteredList.length / cardsPerPage) - 1;
     const paginatedList = filteredList.slice(
         currentPage * cardsPerPage,
         currentPage * cardsPerPage + cardsPerPage
     );
+
+    useEffect(() => {
+      const updateCardsPerPage = () => {
+        const width = window.innerWidth;
+  
+        if (width < 700) {
+          setCardsPerPage(1); // 모바일 화면에서는 1개 카드
+        } else if (width < 1000) {
+          setCardsPerPage(2); // 태블릿에서는 2개 카드
+        } else if (width < 1300) {
+          setCardsPerPage(3);
+        } else if (width < 1600) {
+          setCardsPerPage(4);
+        }
+        else {
+          setCardsPerPage(5); // 데스크탑에서는 6개 카드
+        }
+      };
+  
+      // 화면 크기 변화시 카드 수 업데이트
+      window.addEventListener('resize', updateCardsPerPage);
+  
+      // 초기 화면 크기 감지
+      updateCardsPerPage();
+  
+      return () => {
+        window.removeEventListener('resize', updateCardsPerPage);
+      };
+    }, []);
 
 
     useEffect(() => {
@@ -177,7 +217,6 @@ const Home = () => {
                       >
                         <div className="card-title">{plan.title}</div>
                         <div className="card-description">{plan.content}</div>
-                        <div className="card-date">{plan.date}</div>
                       </div>
                     ))}
                     {Array.from({ length: cardsPerPage - paginatedList.length }).map((_, i) => (
