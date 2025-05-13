@@ -23,11 +23,11 @@
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);;
   }
 
-  .logo-box {
+  .chat-logo-box {
     align-items: center;
     justify-content: center;
     display: flex;
-    margin-top: 100px;
+    margin-top: 200px;
   }
   
   .chat-logo {
@@ -41,13 +41,9 @@
     margin-top:100px;
   }
   
-  .chat-lock-icon {
-    width: 32px;
-    height: 32px;
-  }
   
   .chat-prompt {
-    font-size: 14px;
+    font-size: 16px;
     font-weight: bold;
     margin-bottom: 40px;
   }
@@ -61,14 +57,16 @@
   }
   
   .question-card {
-    width: 250px;
-    padding: 24px;
+    width: 280px;
+    height:130px;
+    padding: 40px;
     background-color: white;
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     font-size: 14px;
     text-align: left;
     line-height: 1.4;
+    box-sizing: border-box;
   }
   
   .chat-input-wrapper {
@@ -83,10 +81,6 @@
     margin: 0 auto;
     position: relative;
   }
-
-  .image {
-    margin-right: 0.5em;
-  }
   
   .chat-input-icon {
     width: 20px;
@@ -100,15 +94,88 @@
     flex: 1;
     font-size: 14px;
     outline: none;
-    color: #333;
+    margin-left: 3px;
+  }
+
+  .chat-input::placeholder {
+    color: #FF6449;
   }
   
   .chat-submit {
     background: transparent;
     border: none;
-    color: #FF6449;
+    color: #FF5929;
     font-size: 20px;
     cursor: pointer;
     margin-left: 10px;
   }
   
+  .message {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.user-message {
+    background-color: #FFB5A9;
+    color: #fff;
+    text-align: right;
+}
+
+.ai-message {
+    background-color: #F2F2F2;
+    color: #333;
+    text-align: left;
+}
+
+/* AI 링크 */
+.ai-links a {
+    color: #007BFF;
+    text-decoration: none;
+    font-size: 12px;
+    display: block;
+    margin-top: 5px;
+}
+
+.loading {
+  text-align: center;
+  color: #FF6449;
+  font-size: 16px;
+  margin-top: 10px;
+}
+
+.chat-buttons {
+  margin-top: 30px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.pdf-button, .finish-button {
+
+  z-index: 1001;
+  margin-right: 2em;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  border: none;
+  border-radius: 100px;
+  width: 70px;
+  height: 70px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);;
+}
+
+.finish-button:hover {
+  background-color: #FF6449;
+}
+
+.pdf-button {
+  background-color: #FF6449;
+  top: 20px;
+}
+
+.finish-button {
+  background-color: #CFCCCB;
+  top: 130px;
+}

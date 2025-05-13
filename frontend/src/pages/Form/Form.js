@@ -25,7 +25,7 @@ const Form = () => {
     detail_info: '',
     location: '',
     photoUrls: [],
-    keywords: '',
+    keywords: [],
     available_dates: '',
     hours: 0,
     minutes: 0,
@@ -92,19 +92,28 @@ const Form = () => {
 
     const formattedSchedule = formatSchedule(formData.available_dates);
     const duration = `${formData.hours}시간 ${formData.minutes}분`;
-    //로컬 데이터
+    //로컬 데이터. 백엔드 연결 시 삭제
     const payload = {
       title: formData.title,
       detail_info: formData.detail_info,
       location: formData.location,
       image_urls: formData.photoUrls.map(img => img.preview),
       keywords: formData.keywords,
-      available_dates: formattedSchedule, // 수정된 형식
+      available_dates: formattedSchedule,
       duration: duration,
       price: Number(formData.price),
       policy: formData.policy,
     };
     console.log('로컬 테스트용 제출 데이터:', payload);
+
+    const dummyChatId = 123412412;
+    const dummyTitle = "유채꽃 관광상품 기획서";
+    const dummyKeywords = ["키워드1", "키워드2", "키워드3"];
+
+    navigate(`/chat/${dummyChatId}`, {
+      state: { title: dummyTitle, keywords: dummyKeywords }
+    });
+
 
     /*
     const token = localStorage.getItem('access_token');
@@ -116,7 +125,7 @@ const Form = () => {
     formToSend.append('image_urls', JSON.stringify([formData.photoUrls]));
     formToSend.append('keywords', JSON.stringify(formData.keywords));
     formToSend.append('available_dates', formattedSchedule); // 날짜 추후 가공
-    formToSend.append('duration', formatDuration(formData.hours, formData.minutes));
+    formToSend.append('duration', duration);
     formToSend.append('price', parsedPrice);
     formToSend.append('policy', formData.policy);
 
@@ -131,14 +140,24 @@ const Form = () => {
       const { chat_id, title, keyword } = response.data;
       navigate(`/chat/${chat_id}`, {
         state: { title, keyword }
-      }); // Chat 페이지로 이동
+      });
     } catch (error) {
-      console.error('제출 오류:', error);
-      alert('제출 중 오류가 발생했습니다.');
+      console.error('Submission error:', error);
+      if (error.response) {
+        // 서버에서 응답이 있으면 해당 응답 처리
+        if (error.response.status === 401) {
+          alert('Unauthorized: Please log in first.');
+        } else if (error.response.status === 500) {
+          alert('Server error occurred. Please try again later.');
+        } else {
+          alert('An error occurred during submission.');
+        }
+      } else {
+        alert('Network error. Please check your internet connection.');
+      }
     }
     */
   
-    navigate('/chat/${chat_id}');
   };
 
   const formatSchedule = (scheduleObj) => {
@@ -194,14 +213,6 @@ const Form = () => {
     return Number(num).toLocaleString() + ' 원';
   };
 
-  
-  const formatDuration = (duration) => {
-    const [hours, minutes] = duration.split(':').map(val => parseInt(val, 10));
-    const parts = [];
-    if (hours > 0) parts.push(`${hours}시간`);
-    if (minutes > 0) parts.push(`${minutes}분`);
-    return parts.join(' ') || '0분';
-  };
 
   useEffect(() => {
     setFormData(DUMMY_FORM_DATA);
@@ -230,7 +241,6 @@ const Form = () => {
             <span className='plus-sign'>+</span>
             <input type="file" name="photo" accept="image/*" onChange={handleChange} required />
           </div>
-          {/* 업로드된 이미지 미리보기 */}
           {formData.photoUrls.length > 0 && (
             <div className="preview-wrapper multi">
               {formData.photoUrls.map((img, index) => (
@@ -251,8 +261,6 @@ const Form = () => {
               ))}
             </div>
           )}
-
-            {/* 오류 표시 */}
             {uploadError && (
               <p style={{ color: 'red', fontSize: '13px', marginTop: '6px' }}>{uploadError}</p>
             )}

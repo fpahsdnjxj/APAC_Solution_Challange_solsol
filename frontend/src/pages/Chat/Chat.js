@@ -1,95 +1,175 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import './Chat.css';
+
 
 
 const Chat = () => {
     const navigate = useNavigate();
-    const { chat_id } = useParams(); 
-    const [chatDetails, setChatDetails] = useState(null);
+    const { chat_id } = useParams();
     const [userMessage, setUserMessage] = useState('');
+    const [messages, setMessages] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');  
 
-    const localChats = [
-        { chat_id: 1, title: '채팅 1', keywords: ['키워드1', '키워드2'] },
-        { chat_id: 2, title: '채팅 2', keywords: ['키워드3', '키워드4'] },
-        { chat_id: 3, title: '채팅 3', keywords: ['키워드5', '키워드6'] },
-    ];
+    const DUMMY_USER_MESSAGE = {
+        content_text: '제주 서귀포시 유채꽃 축제는 언제 열리니?',
+        image_urls: []
+      };
     
-    useEffect(() => {
-        // chat_id에 맞는 데이터를 로컬에서 찾아서 상태 업데이트
-        const chatData = localChats.find(chat => chat.chat_id === parseInt(chat_id));
-        if (chatData) {
-            const keywords = Array.isArray(chatData.keywords) ? chatData.keywords : [];
-          setChatDetails({...chatData, keywords});
-        }
-    }, [chat_id]);
-
-
-    // 메시지 입력 핸들러
+      const DUMMY_AI_RESPONSE = {
+        sender_role: 'ai',
+        content_text: '제주 유채꽃 축제는 매년 4월에 열립니다. [[출처1]]',
+        links: ['https://kto.or.kr/festival/jeju_canola']
+      };
+  
     const handleMessageChange = (e) => {
-        setUserMessage(e.target.value);
+      setUserMessage(e.target.value);
     };
+  
+    const handleSendMessage = async () => {
+      if (!userMessage.trim()) return; 
+  
+      const newMessages = [
+        ...messages,
+        { text: userMessage },
+      ];
+      setMessages(newMessages);
+      setUserMessage('');
+  
+      setLoading(true);
 
-    // 메시지 전송 핸들러
-    const handleSendMessage = () => {
-        if (userMessage.trim() === '') {
-            alert('메시지를 입력하세요.');
-            return;
+      setTimeout(() => {
+        const aiResponse = {
+            sender_role: 'ai',
+          text: "제주 유채꽃 축제는 매년 4월에 열립니다. [[출처1]]",
+          links: ["https://kto.or.kr/festival/jeju_canola"],  // 추가된 URL
+        };
+        setMessages([...newMessages, aiResponse]);
+        setLoading(false);
+      }, 1500);
+
+      //백엔드 연결 시 사용
+        /*
+        try {
+            const response = await axios.post(`/chat/${chat_id}`, {
+                content_text: userMessage,
+                image_urls: []  // 이미지가 필요하면 여기에 추가
+            }, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+                    'Content-Type': 'application/json',
+                }
+            });
+
+            const { content_text, links } = response.data;  // 응답에서 내용과 링크를 받음
+            setAiMessage({
+                text: content_text,
+                links: links || [],  // 링크가 없을 수도 있기 때문에 기본값 설정
+            });
+
+        } catch (error) {
+            console.error('error:', error);
+
+            // 401 Unauthorized 처리
+            if (error.response && error.response.status === 401) {
+                setError('Access token is missing or invalid');
+            }
+            else if (error.response && error.response.status === 404) {
+                setError(`Chat with id '${chat_id}' not found.`);
+            }    
+            // 500 Internal Server Error 처리
+            else if (error.response && error.response.status === 500) {
+                setError('An error occurred while retrieving export list');
+            }
+            // 그 외의 오류 처리
+            else {
+                setError('AI response failed. Please try again later.');
+            }
         }
-        // 메시지 전송 후 처리 (예: 메시지 리스트에 추가, 서버로 전송 등)
-        console.log('전송된 메시지:', userMessage);
-        setUserMessage(''); // 입력란 비우기
+        */
+      setLoading(false);
     };
-
+  
     return (
         <div className="chat-wrapper">
-            <button className='home-button' onClick={() => navigate('/')}>
-                <img src="/home.png" alt="홈" />
-            </button>
-            <div className="logo-box">
+          <button className="home-button" onClick={() => navigate('/')}>
+            <img src="/home.png" alt="홈" />
+          </button>
+  
+          {messages.length === 0 ? (
+            <>
+              <div className="chat-logo-box">
                 <img src="/logo.png" alt="로고" className="logo-image" />
-            </div>
-            <p className="chat-prompt">어떤 기획을 하고 싶으신가요? 자유롭게 채팅으로 말해주세요!</p>
-
-            <div className="question-list">
+              </div>
+              <p className="chat-prompt">어떤 기획을 하고 싶으신가요? 자유롭게 채팅으로 말해주세요!</p>
+              <div className="question-list">
                 {Array(3).fill("Q. 이러이러한 마케팅을 하고 싶은데 어떻게 구성하면 좋을까?").map((q, i) => (
-                    <div className="question-card" key={i}>
-                        {q}
-                    </div>
+                  <div className="question-card" key={i}>
+                    {q}
+                  </div>
                 ))}
-            </div>
-
-            <div className="chat-input-wrapper">
-                <img src="/image.png" alt="icon" className='image'/>
+              </div>
+              <div className="chat-input-wrapper">
                 <input
-                    type="text"
-                    placeholder="채팅을 입력해주세요"
-                    className="chat-input"
-                    value={userMessage}
-                    onChange={handleMessageChange}
+                  type="text"
+                  placeholder="채팅을 입력해주세요"
+                  className="chat-input"
+                  value={userMessage}
+                  onChange={handleMessageChange}
                 />
                 <button className="chat-submit" onClick={handleSendMessage}>
-                    <img src="/send.png" alt="icon" />
+                  <img src="/send.png" alt="icon" />
                 </button>
+              </div>
+            </>
+          ) : (
+            <div className="chat-container">
+              <div className="message-list">
+                {messages.map((message, index) => (
+                  <div
+                    key={index}
+                    className={`message ${index % 2 === 0 ? 'user-message' : 'ai-message'}`}
+                  >
+                    {message.text}
+                    {message.links && message.links.length > 0 && (
+                      <div className="ai-links">
+                        {message.links.map((link, idx) => (
+                          <a href={link} target="_blank" key={idx}>
+                            {link}
+                          </a>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+              <div className="chat-input-wrapper">
+                <input
+                  type="text"
+                  placeholder="채팅을 입력해주세요"
+                  className="chat-input"
+                  value={userMessage}
+                  onChange={handleMessageChange}
+                />
+                <button className="chat-submit" onClick={handleSendMessage}>
+                  <img src="/send.png" alt="icon" />
+                </button>
+              </div>
+              {loading && <div className="loading">AI가 답변을 준비 중입니다...</div>}
+              <div className="chat-buttons">
+                <button className="pdf-button">
+                    <img src="/doc.png" alt="icon" />
+                </button>
+                <button className="finish-button">
+                    <img src="/check.png" alt="icon" />
+                </button>
+              </div>
             </div>
-
-            {chatDetails && (
-                <div className='chat-details'>
-                    <h3>{chatDetails.title}</h3>
-                    <div className="keywords">
-                        <h4>키워드</h4>
-                        {Array.isArray(chatDetails.keywords) && chatDetails.keywords.length > 0 ? (
-                            chatDetails.keywords.map((keyword, index) => (
-                                <span key={index} className="keyword-tag">{keyword}</span>
-                            ))
-                        ) : (
-                            <span>키워드가 없습니다.</span>
-                        )}
-                    </div>
-                </div>
-            )}
+          )}
         </div>
-  );
-};
+      );
+  };
 
 export default Chat;
