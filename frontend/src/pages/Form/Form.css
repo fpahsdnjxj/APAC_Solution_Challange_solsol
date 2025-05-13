@@ -4,7 +4,11 @@
     background-color: #FAF7F6;
     min-height: 100vh;
     box-sizing: border-box;
+    align-items: center;
+    justify-content: center;
   }
+
+
   
   .back-button {
     font-size: 20px;
@@ -37,20 +41,58 @@
   
   .main-form label {
     display: block;
-    margin-top: 12px;
-    margin-bottom: 4px;
+    margin-top: 18px;
+    margin-bottom: 2px;
     color: #ff6d6d;
     font-weight: 500;
   }
+
+  .weekday-schedule {
+    display: flex;
+    flex-direction: column;
+    margin-left: 20px;
+    gap: 3px;
+  }
+  
+  .day-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 4px 0;
+  }
+  
+  .day-label {
+    width: 70px;
+    font-weight: bold;
+    font-size: 14px;
+    margin: 3px!important;
+    text-align: center;
+  }
+  
+  .time-input {
+    width: 120px;
+    padding: 2px 6px;
+    border: 1px solid #ff6d6d;
+    border-radius: 6px;
+    font-size: 12px;
+  }
+  
+  .day-row input[type="checkbox"] {
+    transform: scale(1.2);
+    margin-right: 2px;
+  }
+  
   
   .main-form input[type="text"],
   .main-form input[type="file"] {
-    width: 100%;
+    width: 600px;
+    max-width: 100%;
     padding: 10px;
     border: 2px solid #ff6d6d;
     border-radius: 8px;
     outline: none;
     font-size: 14px;
+    box-sizing: border-box;
   }
   
   .photo-upload {
@@ -97,27 +139,40 @@
     margin-top: 8px;
     margin-bottom: 12px;
   }
+
+  .duration-wrapper {
+    display: flex;
+    gap: 12px;
+    margin-top: 10px;
+    align-items: center;
+  }
+  
+  .duration-select {
+    padding: 2px 6px;
+    border-radius: 6px;
+    border: 1px solid #FF6449;
+    background-color: #fff;
+    font-size: 14px;
+    color: #333;
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 12px;
+  }
   
   .submit-button {
-    background-color: #ff6d6d;
+    background-color: #FF6449;
     color: white;
     padding: 10px 0;
-    width: 100%;
-    margin-top: 24px;
+    width: 400px;
+    margin-top: 40px;
     border: none;
-    border-radius: 20px;
+    border-radius: 10px;
     font-size: 16px;
     font-weight: bold;
     cursor: pointer;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
   }
   
-  .footer {
-    text-align: center;
-    margin-top: 40px;
-    padding: 16px;
-    background: #ff6d6d;
-    color: white;
-    font-size: 0.9rem;
-    border-radius: 8px 8px 0 0;
-  }
   
