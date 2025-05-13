@@ -1,7 +1,9 @@
 FROM openjdk:21-jdk-slim AS builder
 
-# Alpine용 패키지 설치
-RUN apk add --no-cache wget unzip
+# Debian-slim용 패키지 설치
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends wget unzip \
+ && rm -rf /var/lib/apt/lists/*
 
 # Gradle 설치
 RUN wget https://services.gradle.org/distributions/gradle-7.6-bin.zip -P /tmp \
