@@ -56,7 +56,7 @@ const Home = () => {
         return true;
     });
 
-    const cardsPerPage = 4;
+    const cardsPerPage = 6;
     const maxPage = Math.ceil(filteredList.length / cardsPerPage) - 1;
     const paginatedList = filteredList.slice(
         currentPage * cardsPerPage,
@@ -98,6 +98,7 @@ const Home = () => {
 
         fetchExportList();
         */
+       /*
         const fetchChatList = async () => {
           const token = localStorage.getItem('access_token');
           if (!token) {
@@ -125,6 +126,7 @@ const Home = () => {
         };
     
         fetchChatList();
+        */
     }, []);
 
     const handleCreateChat = () => {
@@ -205,7 +207,7 @@ const Home = () => {
                 {chatList.map((chat) => (
                     <div
                         className={`chat-item ${chat.type}`} // ✅ type 클래스 적용
-                        key={chat.chat_id || index}
+                        key={chat.chat_id}
                         onClick={()=> navigate(`/chat/${chat.chat_id}`)}
                     >
                         <div className="chat-title">{chat.title}</div>

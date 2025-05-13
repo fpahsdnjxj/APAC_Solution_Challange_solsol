@@ -83,6 +83,10 @@
     margin: 0 auto;
     position: relative;
   }
+
+  .image {
+    margin-right: 0.5em;
+  }
   
   .chat-input-icon {
     width: 20px;

@@ -1,19 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import axios from 'axios';
 import './Form.css';
 
+const DUMMY_FORM_DATA = {
+  title: "유채꽃 관광상품 기획",
+  detail_info: "유채꽃길을 따라 걷는 산책 코스",
+  location: "제주 서귀포시",
+  photoUrls: [
+    { preview: "https://cdn.example.com/uploads/jeju1.jpg" },
+    { preview: "https://cdn.example.com/uploads/jeju2.jpg" },
+  ],
+  keywords: ["한옥", "전통음식"],
+  available_dates: "월 09:00 ~ 18:00, 화 09:00 ~ 18:00, 수 휴무, ...", // 실제 형식대로 처리
+  duration: "2시간",
+  price: 30000,
+  policy: "하루 전까지 취소 가능"
+};
+
 const Form = () => {
     const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    name: '',
-    description: '',
+    title: '',
+    detail_info: '',
     location: '',
-    photo: null,
     photoUrls: [],
     keywords: '',
-    date: '',
-    duration: '',
+    available_dates: '',
+    hours: 0,
+    minutes: 0,
     price: '',
     policy: '',
   });
@@ -21,14 +36,13 @@ const Form = () => {
   const [showExtra, setShowExtra] = useState(false);
   const [uploadError, setUploadError] = useState('');
 
-  const handleChange = (e) => {
+
+  const handleChange = async (e) => {
     const { name, value, files } = e.target;
     if (name === 'photo' && files.length > 0) {
       const selectedFiles = Array.from(files);
 
-      //백엔드 연결 시 삭제
       const urls = selectedFiles.map(file => ({
-        file,
         preview: URL.createObjectURL(file),
       }));
   
@@ -66,11 +80,9 @@ const Form = () => {
   };
 
   const handleRemoveImage = (index) => {
-    const newPhotoUrls = [...formData.photoUrls];
-    newPhotoUrls.splice(index, 1);
     setFormData(prev => ({
       ...prev,
-      photoUrls: newPhotoUrls,
+      photoUrls: prev.photoUrls.filter((_, i) => i !== index),
     }));
   };
   
@@ -78,25 +90,21 @@ const Form = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const formattedSchedule = formatSchedule(schedule);
+    const formattedSchedule = formatSchedule(formData.available_dates);
+    const duration = `${formData.hours}시간 ${formData.minutes}분`;
+    //로컬 데이터
     const payload = {
-      title: formData.name,
-      detail_info: formData.description,
+      title: formData.title,
+      detail_info: formData.detail_info,
       location: formData.location,
-      image_urls: formData.photoUrls.map(img => img.preview), // 실제는 서버에서 받는 URL
-      keywords: formData.keywords.split(',').map(k => k.trim()).filter(Boolean),
-      available_dates: formattedSchedule, // 임시 하드코딩
-      duration: formatDuration(formData.duration), // TODO: 시간 선택값 연결
+      image_urls: formData.photoUrls.map(img => img.preview),
+      keywords: formData.keywords,
+      available_dates: formattedSchedule, // 수정된 형식
+      duration: duration,
       price: Number(formData.price),
       policy: formData.policy,
-      operating_schedule:formatSchedule(schedule),
     };
-    if (!formData.photoUrls.length) {
-      alert('이미지 업로드가 아직 완료되지 않았습니다.');
-      return;
-    }    
-  
-    console.log('제출 데이터:',payload);
+    console.log('로컬 테스트용 제출 데이터:', payload);
 
     /*
     const token = localStorage.getItem('access_token');
@@ -106,7 +114,7 @@ const Form = () => {
     formToSend.append('detail_info', formData.description);
     formToSend.append('location', formData.location);
     formToSend.append('image_urls', JSON.stringify([formData.photoUrls]));
-    formToSend.append('keywords', JSON.stringify(formData.keywords.split(',')));
+    formToSend.append('keywords', JSON.stringify(formData.keywords));
     formToSend.append('available_dates', formattedSchedule); // 날짜 추후 가공
     formToSend.append('duration', formatDuration(formData.hours, formData.minutes));
     formToSend.append('price', parsedPrice);
@@ -130,9 +138,15 @@ const Form = () => {
     }
     */
   
-    navigate('/chat');
+    navigate('/chat/${chat_id}');
   };
 
+  const formatSchedule = (scheduleObj) => {
+    return scheduleObj.split(',').map(item => {
+      const [day, time] = item.trim().split(' ');
+      return `${day} ${time}`; // 예: "월 09:00 ~ 18:00"
+    }).join(', ');
+  };
   
   const weekdays = ['월', '화', '수', '목', '금', '토', '일'];
   
@@ -180,13 +194,6 @@ const Form = () => {
     return Number(num).toLocaleString() + ' 원';
   };
 
-  const formatSchedule = (scheduleObj) => {
-    return Object.entries(scheduleObj)
-      .map(([day, { active, start, end }]) => {
-        return active ? `${day} ${start}~${end}` : `${day} 운영안함`;
-      })
-      .join(', ');
-  };
   
   const formatDuration = (duration) => {
     const [hours, minutes] = duration.split(':').map(val => parseInt(val, 10));
@@ -195,6 +202,10 @@ const Form = () => {
     if (minutes > 0) parts.push(`${minutes}분`);
     return parts.join(' ') || '0분';
   };
+
+  useEffect(() => {
+    setFormData(DUMMY_FORM_DATA);
+  }, []);
   
 
   return (
@@ -205,41 +216,41 @@ const Form = () => {
       <h2 className="form-title">폼 작성</h2>
       <form className="main-form" onSubmit={handleSubmit}>
         <label>상품명*</label>
-        <input type="text" name="name" value={formData.name} onChange={handleChange} required />
+        <input type="text" name="name" value={formData.title} onChange={handleChange} required />
 
         <label>상품 설명*</label>
-        <input type="text" name="description" value={formData.description} onChange={handleChange} required />
+        <input type="text" name="description" value={formData.detail_info} onChange={handleChange} required />
 
         <label>위치*</label>
         <input type="text" name="location" value={formData.location} onChange={handleChange} required />
 
-        <label>사진 첨부*</label>
+        <label>사진 첨부</label>
         <div className="photo-upload">
-          <label className="photo-box">
+          <div className="photo-box">
             <span className='plus-sign'>+</span>
             <input type="file" name="photo" accept="image/*" onChange={handleChange} required />
-          </label>
-            {/* 업로드된 이미지 미리보기 */}
-            {formData.photoUrls.length > 0 && (
-              <div className="preview-wrapper multi">
-                {formData.photoUrls.map((img, index) => (
-                  <div key={index} className="preview-box">
-                    <img
-                      src={img.preview}
-                      alt={`업로드 ${index + 1}`}
-                      className='preview-image'
-                    />
-                    <button
-                      type="button"
-                      className="remove-image-button"
-                      onClick={() => handleRemoveImage(index)}
-                    >
-                      삭제
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
+          </div>
+          {/* 업로드된 이미지 미리보기 */}
+          {formData.photoUrls.length > 0 && (
+            <div className="preview-wrapper multi">
+              {formData.photoUrls.map((img, index) => (
+                <div key={index} className="preview-box">
+                  <img
+                    src={img.preview}
+                    alt={`업로드 ${index + 1}`}
+                    className="preview-image"
+                  />
+                  <button
+                    type="button"
+                    className="remove-image-button"
+                    onClick={() => handleRemoveImage(index)}
+                  >
+                    삭제
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
 
             {/* 오류 표시 */}
             {uploadError && (
@@ -292,13 +303,13 @@ const Form = () => {
               <div className="extra-row">
                 
                 <div className="duration-wrapper">
-                  <select name="hours">
+                  <select name="hours" value={formData.hours} onChange={(e) => setFormData({ ...formData, hours: e.target.value })}>
                     <option value="0">0시간</option>
                     <option value="1">1시간</option>
                     <option value="2">2시간</option>
                     <option value="3">3시간</option>
                   </select>
-                  <select name="minutes">
+                  <select name="minutes" value={formData.minutes} onChange={(e) => setFormData({ ...formData, minutes: e.target.value })}>
                     <option value="0">0분</option>
                     <option value="15">15분</option>
                     <option value="30">30분</option>
