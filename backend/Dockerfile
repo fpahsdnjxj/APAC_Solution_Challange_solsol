@@ -4,7 +4,9 @@
 FROM gradle:7.6.0-jdk17 AS builder
 WORKDIR /app
 COPY . .
-RUN gradle build --no-daemon
+
+RUN rm -rf /home/gradle/.gradle/caches \
+    && gradle build --no-daemon --stacktrace
 
 # 2단계: 실행
 FROM openjdk:17-jdk
