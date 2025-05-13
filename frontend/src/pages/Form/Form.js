@@ -120,8 +120,10 @@ const Form = () => {
         },
       });
 
-      const { chat_id } = response.data;
-      navigate(`/chat/${chat_id}`); // Chat 페이지로 이동
+      const { chat_id, title, keyword } = response.data;
+      navigate(`/chat/${chat_id}`, {
+        state: { title, keyword }
+      }); // Chat 페이지로 이동
     } catch (error) {
       console.error('제출 오류:', error);
       alert('제출 중 오류가 발생했습니다.');

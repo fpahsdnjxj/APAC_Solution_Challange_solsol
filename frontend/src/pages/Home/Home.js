@@ -44,6 +44,7 @@ const DUMMY_CHATS = Array.from({ length: 10 }, (_, i) => ({
 const Home = () => {
     const navigate = useNavigate();
     const [exportList, setExportList] = useState([]);
+    const [chatList, setChatList] = useState([]);
     const [error, setError] = useState(null);
     const [filter, setFilter] = useState('전체');
     const [currentPage, setCurrentPage] = useState(0); 
@@ -62,8 +63,6 @@ const Home = () => {
         currentPage * cardsPerPage + cardsPerPage
     );
 
-      
-    const [chatList, setChatList] = useState([]);
 
     useEffect(() => {
         /*
@@ -99,10 +98,37 @@ const Home = () => {
 
         fetchExportList();
         */
+        const fetchChatList = async () => {
+          const token = localStorage.getItem('access_token');
+          if (!token) {
+            setError('로그인이 필요합니다.');
+            return;
+          }
+    
+          try {
+            const response = await axios.get('/chatlist', {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+              },
+            });
+    
+            setChatList(response.data.chat_list);
+          } catch (err) {
+            console.error('채팅 목록 로딩 오류:', err);
+            if (err.response && err.response.status === 401) {
+              setError('로그인이 필요합니다.');
+            } else {
+              setError('채팅 목록을 불러오는 중 오류가 발생했습니다.');
+            }
+          }
+        };
+    
+        fetchChatList();
     }, []);
 
     const handleCreateChat = () => {
-        navigate('/form'); // ✅ /Form 페이지로 이동
+        navigate('/form');
     };
 
     return (
@@ -149,7 +175,7 @@ const Home = () => {
                       >
                         <div className="card-title">{plan.title}</div>
                         <div className="card-description">{plan.content}</div>
-                        {/*<div className="card-date">{plan.date}</div>*/}
+                        <div className="card-date">{plan.date}</div>
                       </div>
                     ))}
                     {Array.from({ length: cardsPerPage - paginatedList.length }).map((_, i) => (
@@ -176,7 +202,7 @@ const Home = () => {
                 </button>
               </div>
               <div className="chat-list">
-                {chatList.map((chat, index) => (
+                {chatList.map((chat) => (
                     <div
                         className={`chat-item ${chat.type}`} // ✅ type 클래스 적용
                         key={chat.chat_id || index}
@@ -185,7 +211,7 @@ const Home = () => {
                         <div className="chat-title">{chat.title}</div>
                         <div className="chat-keywords">
                             {chat.keywords.map((keyword, i) => (
-                                <span className={`keyword-tag ${chat.type}`} key={i}>
+                                <span className="keyword-tag" key={i}>
                                     {keyword}
                                 </span>
                             ))}

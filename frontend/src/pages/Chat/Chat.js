@@ -5,7 +5,23 @@ import './Chat.css';
 
 const Chat = () => {
     const navigate = useNavigate();
-    const { id } = useParams();
+    const { chat_id } = useParams(); 
+    const [chatDetails, setChatDetails] = useState(null);
+
+    const localChats = [
+        { chat_id: 1, title: '채팅 1', detail_info: '채팅 1 상세 내용', keywords: ['키워드1', '키워드2'] },
+        { chat_id: 2, title: '채팅 2', detail_info: '채팅 2 상세 내용', keywords: ['키워드3', '키워드4'] },
+        { chat_id: 3, title: '채팅 3', detail_info: '채팅 3 상세 내용', keywords: ['키워드5', '키워드6'] },
+    ];
+    
+    useEffect(() => {
+        // chat_id에 맞는 데이터를 로컬에서 찾아서 상태 업데이트
+        const chatData = localChats.find(chat => chat.chat_id === parseInt(chat_id));
+        if (chatData) {
+          setChatDetails(chatData);
+        }
+    }, [chat_id]);
+
     return (
         <div className="chat-wrapper">
             <button className='home-button' onClick={() => navigate('/')}>
