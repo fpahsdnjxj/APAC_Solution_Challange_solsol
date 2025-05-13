@@ -1,4 +1,4 @@
-FROM openjdk:21-jdk AS builder
+FROM openjdk:21-jdk-slim AS builder
 
 # Alpine용 패키지 설치
 RUN apk add --no-cache wget unzip
@@ -17,7 +17,7 @@ COPY . .
 RUN rm -rf /home/gradle/.gradle/caches \
  && gradle build --no-daemon --stacktrace
 
-FROM eclipse-temurin:21-jdk
+FROM eclipse-temurin:21-jdk-jammy
 WORKDIR /app
 COPY --from=builder /app/build/libs/*.jar app.jar
 ENTRYPOINT ["java","-jar","app.jar"]
