@@ -105,6 +105,44 @@ const Chat = () => {
     useEffect(() => {
         messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages]);
+
+    const handleChatComplete = async () => {
+        //더미
+        setTimeout(() => {
+            alert(`Chat ${chat_id} is completed successfully!`);
+            navigate(`/plan/${chat_id}`, {
+                state:{ title: "유채꽃 관광상품 기획", keywords: ["한옥", "전통음식"] },
+            });
+        }, 1500);
+        
+        //백엔드 연결시 사용
+        /*
+        try {
+          const response = await axios.post(`/chat/${chat_id}/chat_complete`, {}, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+              'Content-Type': 'application/json',
+            }
+          });
+    
+          if (response.data.message) {
+            alert(`Chat ${chat_id} is completed successfully!`);
+            navigate(`/plan/${chat_id}`); 
+          }
+        } catch (error) {
+          console.error('Error completing chat:', error);
+          if (error.response && error.response.status === 401) {
+            setError('Access token is missing or invalid');
+          } else if (error.response && error.response.status === 404) {
+            setError(`Chat with id '${chat_id}' not found.`);
+          } else if (error.response && error.response.status === 500) {
+            setError('An error occurred while completing the chat');
+          } else {
+            setError('An unexpected error occurred. Please try again later.');
+          }
+        }
+          */
+    };
   
     return (
         <div className="chat-wrapper">
@@ -176,10 +214,7 @@ const Chat = () => {
               </div>
               {loading && <div className="loading">AI가 답변을 준비 중입니다...</div>}
               <div className="chat-buttons">
-                <button className="pdf-button">
-                    <img src="/doc.png" alt="icon" />
-                </button>
-                <button className="finish-button" onClick={() => navigate('/plan')}>
+                <button className="finish-button" onClick={handleChatComplete}>
                     <img src="/check.png" alt="icon" />
                 </button>
               </div>

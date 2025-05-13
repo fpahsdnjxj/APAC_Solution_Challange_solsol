@@ -199,30 +199,21 @@
   justify-content: space-between;
 }
 
-.pdf-button, .finish-button {
-
+.finish-button {
+  background-color: #CFCCCB;
   z-index: 1001;
   margin-right: 2em;
   position: absolute;
   top: 20px;
-  right: 20px;
+  right: 10px;
   border: none;
   border-radius: 100px;
   width: 70px;
   height: 70px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  
 }
 
 .finish-button:hover {
   background-color: #FF6449;
-}
-
-.pdf-button {
-  background-color: #FF6449;
-  top: 20px;
-}
-
-.finish-button {
-  background-color: #CFCCCB;
-  top: 130px;
 }
