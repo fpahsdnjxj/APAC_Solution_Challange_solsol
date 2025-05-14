@@ -32,8 +32,6 @@ const Plan = () => {
     const fetchPlanData = async () => {
       //이건 더미
         setPlanData(DUMMY_PLAN_DATA);
-        console.log("✅ planData.content:", DUMMY_PLAN_DATA.content);
-        console.log('typeof planData.content:', typeof planData.content);
 
       // 이 아래는 백엔드 연결 시 사용
       /*
