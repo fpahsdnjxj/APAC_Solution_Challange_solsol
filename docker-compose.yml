@@ -39,10 +39,13 @@ services:
     expose:
       - "8080"
     volumes:
-      - ./secrets/application-secret.properties:/app/src/main/resources/application-secret.properties:ro
-      - ./secrets/firebase-service-account.json:/app/src/main/resources/firebase-service-account.json:ro
+      - ./secrets/application-secret.properties:/app/secrets/application-secret.properties:ro
+    command: >
+      java -jar app.jar
+      --spring.config.location=file:/app/secrets/application-secret.properties
     networks:
       - ttarang_network
+
 
   frontend:
     build:
