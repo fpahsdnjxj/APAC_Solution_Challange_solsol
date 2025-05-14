@@ -18,9 +18,9 @@ function App() {
       <main>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/chat/:id" element={<Chat />} />
-          <Route path="/chat" element={<Chat />} />
-          <Route path="/plan" element={<Plan />} />
+          <Route path="/chat/:chat_id" element={<Chat />} />
+          
+          <Route path="/plan/:chat_id" element={<Plan />} />
           <Route path="/form" element={<Form />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />

@@ -7,80 +7,116 @@ import './Home.css';
 
 // 더미 기획서 데이터 (로컬 테스트용)
 const DUMMY_EXPORTS = [
-    {
-      title: '인스타 게시물',
-      type: 'planning',
-      content: '내용을 한줄만 표시...',
-    },
-    {
-        title: '인스타 게시물',
-        type: 'planning',
-        content: '내용을 한줄만 표시...',
-    },
-    {
-      title: '인스타 게시물',
-      type: 'marketing',
-      content: '내용을 한줄만 표시...',
-    },
-    {
-      title: '인스타 게시물',
-      type: 'marketing',
-      content: '내용을 한줄만 표시...',
-    },
-    {
-        title: '인스타 게시물',
-        type: 'marketing',
-        content: '내용을 한줄만 표시...',
-      },
+  {
+    "chat_id":12342,
+     "title": "인스타 게시물",
+     "type": "planning",
+     "content": "내용을 한줄만 표시..."
+   },
+   {
+      "chat_id":123342,
+     "title": "인스타 게시물",
+     "type": "marketing",
+     "content": "내용을 한줄만 표시..."
+   },
+   {
+      "chat_id":122635632,
+     "title": "인스타 게시물",
+     "type": "marketing",
+     "content": "내용을 한줄만 표시..."
+   }
 ];
   
-const DUMMY_CHATS = Array.from({ length: 10 }, (_, i) => ({
-    chat_id: 1000 + i,
-    title: `인스타 게시물 ${i + 1}`,
-    type: i % 2 === 0 ? 'marketing' : 'planning',
-    keywords: [`키워드${i + 1}`, `키워드${i + 2}`],
-}));
+const DUMMY_CHATS = [
+  {
+    chat_id: 12342,
+    title: "인스타 게시물",
+    type: "planning",
+    keywords: ["키워드1", "키워드2"],
+    update_date: "2025-12-10 19:00:00"
+  },
+  {
+    chat_id: 12343,
+    title: "인스타 게시물",
+    type: "marketing",
+    keywords: ["키워드1", "키워드2"],
+    update_date: "2025-12-10 19:00:00"
+  },
+  {
+    chat_id: 12344,
+    title: "인스타 게시물",
+    type: "marketing",
+    keywords: ["키워드1", "키워드2"],
+    update_date: "2025-12-10 19:00:00"
+  }
+];
   
 const Home = () => {
     const navigate = useNavigate();
     const [exportList, setExportList] = useState([]);
+    const [chatList, setChatList] = useState([]);
     const [error, setError] = useState(null);
-    const [filter, setFilter] = useState('전체');
+    const [filter, setFilter] = useState('All');
     const [currentPage, setCurrentPage] = useState(0); 
+    const [cardsPerPage, setCardsPerPage] = useState(5); // 기본 카드 수
 
     const filteredList = exportList.filter(plan => {
-        if (filter === '전체') return true;
-        if (filter === '마케팅') return plan.type === 'marketing';
-        if (filter === '기획') return plan.type === 'planning';
+        if (filter === 'All') return true;
+        if (filter === 'marketing') return plan.type === 'marketing';
+        if (filter === 'planning') return plan.type === 'planning';
         return true;
     });
 
-    const cardsPerPage = 4;
     const maxPage = Math.ceil(filteredList.length / cardsPerPage) - 1;
     const paginatedList = filteredList.slice(
         currentPage * cardsPerPage,
         currentPage * cardsPerPage + cardsPerPage
     );
 
-      
-    const [chatList, setChatList] = useState([]);
+    useEffect(() => {
+      const updateCardsPerPage = () => {
+        const width = window.innerWidth;
+  
+        if (width < 700) {
+          setCardsPerPage(1); // 모바일 화면에서는 1개 카드
+        } else if (width < 1000) {
+          setCardsPerPage(2); // 태블릿에서는 2개 카드
+        } else if (width < 1300) {
+          setCardsPerPage(3);
+        } else if (width < 1600) {
+          setCardsPerPage(4);
+        }
+        else {
+          setCardsPerPage(5); // 데스크탑에서는 6개 카드
+        }
+      };
+  
+      // 화면 크기 변화시 카드 수 업데이트
+      window.addEventListener('resize', updateCardsPerPage);
+  
+      // 초기 화면 크기 감지
+      updateCardsPerPage();
+  
+      return () => {
+        window.removeEventListener('resize', updateCardsPerPage);
+      };
+    }, []);
 
     useEffect(() => {
-        /*
-        const token = localStorage.getItem('access_token');
+        const token = localStorage.getItem('accessToken');
         if (!token) {
             setError('로그인이 필요합니다.');
             return;
         }
-        */
+        
         console.log('로컬 더미 데이터 테스트');
         setExportList(DUMMY_EXPORTS);
         setChatList(DUMMY_CHATS);  
 
-        /*
+        
         const fetchExportList = async () => {
             try {
-                const response = await axios.get('/export', {
+                const response = await axios.get('/export/list', {
                     headers: {
                         Authorization: `Bearer ${token}`,
                         'Content-Type': 'application/json',
@@ -97,12 +133,42 @@ const Home = () => {
             }
         };
 
+        const fetchChatList = async () => {
+            if (!token) {
+                setError('로그인이 필요합니다.');
+                return;
+            }
+            try {
+                const response = await axios.get('/chat/chatlist', {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                });
+                // id → chat_id로 변환
+                setChatList(
+                  (response.data.chat_list || []).map(chat => ({
+                    ...chat,
+                    chat_id: chat.id,
+                    keywords: Array.isArray(chat.keywords) ? chat.keywords : [],
+                  }))
+                );
+            } catch (err) {
+                console.error('채팅 목록 로딩 오류:', err);
+                if (err.response && err.response.status === 401) {
+                    setError('로그인이 필요합니다.');
+                } else {
+                    setError('채팅 목록을 불러오는 중 오류가 발생했습니다.');
+                }
+            }
+        };
+
         fetchExportList();
-        */
+        fetchChatList();
     }, []);
 
     const handleCreateChat = () => {
-        navigate('/form'); // ✅ /Form 페이지로 이동
+        navigate('/form');
     };
 
     return (
@@ -111,9 +177,9 @@ const Home = () => {
           <div className="home-wrapper">
             <section className="section-document">
               <div className="section-header">
-                <h2>나의 기획서</h2>
+                <h2>My Plan</h2>
                 <div className="filters">
-                  {['전체', '마케팅', '기획'].map(f => (
+                  {['All', 'marketing', 'planning'].map(f => (
                     <span
                       key={f}
                       className={`filter ${filter === f ? 'active' : ''}`}
@@ -127,7 +193,6 @@ const Home = () => {
                   ))}
                 </div>
               </div>
-    
               {error ? (
                 <p className="error-text">{error}</p>
               ) : (
@@ -139,24 +204,21 @@ const Home = () => {
                   >
                     {'<'}
                   </button>
-    
                   <div className="card-list">
                     {paginatedList.map((plan, index) => (
                       <div
                         key={index}
                         className={`plan-card ${plan.type}`}
-                        onClick={() => navigate('/plan')}
+                        onClick={() => navigate(`/plan/${plan.chat_id}`)}
                       >
                         <div className="card-title">{plan.title}</div>
                         <div className="card-description">{plan.content}</div>
-                        {/*<div className="card-date">{plan.date}</div>*/}
                       </div>
                     ))}
                     {Array.from({ length: cardsPerPage - paginatedList.length }).map((_, i) => (
                         <div key={`empty-${i}`} className="plan-card empty-card" />
                     ))}
                   </div>
-    
                   <button
                     className="slide-button"
                     disabled={currentPage === maxPage}
@@ -167,38 +229,37 @@ const Home = () => {
                 </div>
               )}
             </section>
-    
             <section className="section-chatting">
               <div className="section-header">
-                <h2>나의 채팅</h2>
+                <h2>My Chat</h2>
                 <button className="create-button" onClick={handleCreateChat}>
-                  채팅 생성
+                  create chat
                 </button>
               </div>
               <div className="chat-list">
-                {chatList.map((chat, index) => (
+                {chatList.map((chat) => (
                     <div
-                        className={`chat-item ${chat.type}`} // ✅ type 클래스 적용
-                        key={chat.chat_id || index}
+                        className={`chat-item ${chat.type}`}
+                        key={chat.chat_id}
                         onClick={()=> navigate(`/chat/${chat.chat_id}`)}
                     >
                         <div className="chat-title">{chat.title}</div>
                         <div className="chat-keywords">
-                            {chat.keywords.map((keyword, i) => (
-                                <span className={`keyword-tag ${chat.type}`} key={i}>
-                                    {keyword}
-                                </span>
-                            ))}
+                          {Array.isArray(chat.keywords) && chat.keywords.map((keyword, i) => (
+                            <span className="keyword-tag" key={i}>
+                              {keyword}
+                            </span>
+                          ))}
                         </div>
-                        <div className="chat-date">2025.01.01 19:00</div> {/* 날짜 데이터가 없으니 고정 */}
+                        <div className="chat-date">{chat.update_date}</div> 
                     </div>
-                    ))}
-                </div>
+                ))}
+              </div>
             </section>
           </div>
           <Footer />
         </>
     );
 };
-    
+
 export default Home;

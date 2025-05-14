@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 import java.security.Key;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 @Component
 public class JwtTokenProvider {
@@ -73,7 +75,7 @@ public class JwtTokenProvider {
         String email = getEmail(token);
         UserDetails userDetails = User.withUsername(email)
                 .password("") // 실제 비번 사용 안 함
-                .authorities(Collections.emptyList()) // 권한 없음
+                .authorities(List.of(new SimpleGrantedAuthority("ROLE_USER"))) // 권한 없음
                 .build();
         return new UsernamePasswordAuthenticationToken(userDetails, token, userDetails.getAuthorities());
     }
