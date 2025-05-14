@@ -20,7 +20,7 @@ const Login = () => {
         e.preventDefault();
 
         try {
-            const response = await axios.post('/auth/login', {
+            const response = await axios.post('/api/auth/login', {
                 email: formData.email,
                 password: formData.password,
             }, {
@@ -56,7 +56,7 @@ const Login = () => {
     };
 
     const handleGoogleLogin = () => {
-      window.location.href = "http://localhost:8080/auth/google";
+      window.location.href = "/api/auth/google";
     };
 
   return (

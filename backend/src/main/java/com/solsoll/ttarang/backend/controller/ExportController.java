@@ -24,7 +24,7 @@ import java.util.function.Function;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/export")
+@RequestMapping("/api/export")
 public class ExportController {
 
     private final ExportService exportService;
