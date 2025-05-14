@@ -28,9 +28,8 @@ const Plan = () => {
   useEffect(() => {
     const fetchPlanData = async () => {
         setPlanData(DUMMY_PLAN_DATA);
-        // 백엔드 연결 시 사용
-        /*
-      const token = localStorage.getItem('access_token');
+        
+      const token = localStorage.getItem('accessToken');
       if (!token) {
         setError('Login required.');
         return;
@@ -55,7 +54,6 @@ const Plan = () => {
           setError('An error occurred while retrieving export list');
         }
       }
-        */
     };
 
     fetchPlanData();
@@ -73,25 +71,13 @@ const Plan = () => {
     };
 
     try {
-      // Replace this with the actual API request
-      /*
       const response = await axios.post(`/export/${chat_id}/marketing_chat`, bodyData, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
           'Content-Type': 'application/json',
         },
       });
-      */
 
-      // Simulate successful response
-      const response = {
-        data: {
-          type : "marketing",
-          chatid: 12432423,
-          title: "유채꽃 마케팅 기획서",
-          keyword: ["한옥", "전통음식", "관광"]
-        }
-      };
 
       console.log('Marketing Chat Created:', response);
 

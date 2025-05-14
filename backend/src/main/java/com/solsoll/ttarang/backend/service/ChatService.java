@@ -48,6 +48,7 @@ public class ChatService {
         chat.setKeywords(aiResponse.getKeywords());
         chat.setType(Chattype.planning);
         chat.setUser(user);
+        chat.setCompleted(false);
         chatRepository.save(chat);
 
         ProjectForm form = new ProjectForm();

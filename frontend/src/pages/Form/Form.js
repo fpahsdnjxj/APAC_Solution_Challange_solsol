@@ -107,27 +107,7 @@ const Form = () => {
     }
   };
       
-      //백엔드 연결 시 여기 사용 (이미지 업로드 api)
-      /*
-      const token = localStorage.getItem('access_token');
-      const uploads = selectedFiles.map(async (file) => {
-        const formDataToSend = new FormData();
-        formDataToSend.append('file', file);
-        const res = await axios.post('/upload/image', formDataToSend, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data',
-          },
-        });
-        return res.data.url;
-      });
-
-      const uploadedUrls = await Promise.all(uploads);
-      setFormData(prev => ({
-        ...prev,
-        photoUrls: [...prev.photoUrls, ...uploadedUrls]
-      }));
-      */
+    const token = localStorage.getItem('accessToken');
 
 
   const handleRemoveImage = (index) => {
@@ -155,7 +135,7 @@ const Form = () => {
     const formattedSchedule = formatScheduleFromUI();
     const duration = `${formData.hours}시간 ${formData.minutes}분`;
     
-    //payload도 더미. 나중에 지우기
+    //이거 사용해서 backend 연결 예정입니다.
     const payload = {
       title: formData.title,
       detail_info: formData.detail_info,
@@ -179,25 +159,31 @@ const Form = () => {
     });
 
     // 백엔드 연결 시 여기 사용 (폼 제출 api)
-    /*
-    const token = localStorage.getItem('access_token');
+    const token = localStorage.getItem('accessToken');
     const formToSend = new FormData();
 
     formToSend.append('title', formData.title);
     formToSend.append('detail_info', formData.detail_info);
     formToSend.append('location', formData.location);
     formToSend.append('image_urls', JSON.stringify(formData.photoUrls.map(img => img.preview)));
-    formToSend.append('keywords', JSON.stringify(formData.keywords.split(',').map(k => k.trim())));
+    formToSend.append(
+      'keywords',
+      JSON.stringify(
+        Array.isArray(formData.keywords)
+          ? formData.keywords.map(k => k.trim())
+          : formData.keywords.split(',').map(k => k.trim())
+      )
+    );
     formToSend.append('available_dates', formattedSchedule);
     formToSend.append('duration', duration);
     formToSend.append('price', Number(formData.price));
     formToSend.append('policy', formData.policy);
 
     try {
-      const response = await axios.post('/planing_chat', formToSend, {
+      const response = await axios.post('/chat/planning_chat', payload, {
         headers: {
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data',
+          'Content-Type': 'application/json',
         },
       });
 
@@ -219,7 +205,7 @@ const Form = () => {
         alert('Network error. Please check your internet connection');
       }
     }
-    */
+  
   
   };
 

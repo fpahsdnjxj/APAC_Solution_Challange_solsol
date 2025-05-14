@@ -51,6 +51,34 @@ const Chat = () => {
     const handleMessageChange = (e) => {
       setUserMessage(e.target.value);
     };
+
+    const fetchMessages = async () => {
+            try {
+              const response = await axios.get(`/chat/${chat_id}`, {
+                headers: {
+                  Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+                  'Content-Type': 'application/json',
+                },
+              });
+              setMessages(response.data.message_list);
+              
+
+              //더미임
+              //if(chat_id != 123412412) {
+                //setMessages(DUMMY_MESSAGE_LIST);
+              //}
+            } catch (error) {
+                if (error.response && error.response.status === 401) {
+                    setError('Access token is missing or invalid');
+                } else if (error.response && error.response.status === 404) {
+                    setError(`Chat with id ${chat_id} not found`);
+                } else if (error.response && error.response.status === 500) {
+                    setError('An error occurred while retrieving messages');
+                } else {
+                    setError('An unexpected error occurred. Please try again later.');
+                }
+        }
+      };
   
     const handleSendMessage = async () => {
       if (!userMessage.trim()) return; 
@@ -65,15 +93,15 @@ const Chat = () => {
       setLoading(true);
 
       //더미임
-      setTimeout(() => {
-        const aiResponse = {
-          sender_role: 'ai',
-          content_text: "제주 유채꽃 축제는 매년 4월에 열립니다. [[출처1]]",
-          links: ["https://kto.or.kr/festival/jeju_canola"],  // 추가된 URL
-        };
-        setMessages([...newMessages, aiResponse]);
-        setLoading(false);
-      }, 1500);
+      // setTimeout(() => {
+      //   const aiResponse = {
+      //     sender_role: 'ai',
+      //     content_text: "제주 유채꽃 축제는 매년 4월에 열립니다. [[출처1]]",
+      //     links: ["https://kto.or.kr/festival/jeju_canola"],  // 추가된 URL
+      //   };
+      //   setMessages([...newMessages, aiResponse]);
+      //   setLoading(false);
+      // }, 1500);
 
         try {
             const response = await axios.post(`/chat/${chat_id}`, {
@@ -81,7 +109,7 @@ const Chat = () => {
                 image_urls: []  // 이미지가 필요하면 여기에 추가
             }, {
                 headers: {
-                    Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+                    Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
                     'Content-Type': 'application/json',
                 }
             });
@@ -95,6 +123,8 @@ const Chat = () => {
                 links: links || [],
               },
             ]);
+
+            fetchMessages();
 
         } catch (error) {
             console.error('error:', error);
@@ -126,42 +156,10 @@ const Chat = () => {
     };
 
     useEffect(() => {
-        const fetchMessages = async () => {
-            try {
-            
-              const response = await axios.get(`/chat/${chat_id}`, {
-                headers: {
-                  Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-                  'Content-Type': 'application/json',
-                },
-              });
-              setMessages(response.data.message_list);
-              
-
-              //더미임
-              if(chat_id != 123412412) {
-                setMessages(DUMMY_MESSAGE_LIST);
-              }
-            } catch (error) {
-              if (error.response && error.response.status === 401) {
-                setError('Access token is missing or invalid');
-            } else if (error.response && error.response.status === 404) {
-                setError(`Chat with id ${chat_id} not found`);
-              } else if (error.response && error.response.status === 500) {
-                setError('An error occurred while retrieving messages');
-              } else {
-                setError('An unexpected error occurred. Please try again later.');
-              }
-            }
-          };
-      
-          // 메시지가 없다면 API 호출
-          if (messages.length === 0) {
-            fetchMessages();
-          }
-      
+    
+        fetchMessages();
         messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, [messages]);
+    }, [chat_id]);
 
     const handleChatComplete = async () => {
         //더미
@@ -175,9 +173,9 @@ const Chat = () => {
         
         
         try {
-          const response = await axios.post(`/chat/${chat_id}/chat_complete`, {}, {
+          const response = await axios.patch(`/chat/${chat_id}/chat_complete`, {}, {
             headers: {
-              Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+              Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
               'Content-Type': 'application/json',
             }
           });
@@ -279,6 +277,6 @@ const Chat = () => {
           )}
         </div>
       );
-  };
-
+  }
+  
 export default Chat;
