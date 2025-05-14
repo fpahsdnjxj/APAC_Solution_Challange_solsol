@@ -75,8 +75,6 @@ const Chat = () => {
         setLoading(false);
       }, 1500);
 
-      //백엔드 연결 시 사용
-        /*
         try {
             const response = await axios.post(`/chat/${chat_id}`, {
                 content_text: userMessage,
@@ -88,11 +86,15 @@ const Chat = () => {
                 }
             });
 
-            const { content_text, links } = response.data;  // 응답에서 내용과 링크를 받음
-            setAiMessage({
+            const { content_text, links } = response.data;
+            setMessages([
+              ...newMessages,
+              {
+                sender_role: 'ai',
                 content_text: content_text,
-                links: links || [],  // 링크가 없을 수도 있기 때문에 기본값 설정
-            });
+                links: links || [],
+              },
+            ]);
 
         } catch (error) {
             console.error('error:', error);
@@ -113,7 +115,6 @@ const Chat = () => {
                 setError('AI response failed. Please try again later.');
             }
         }
-        */
       setLoading(false);
     };
 
@@ -127,7 +128,7 @@ const Chat = () => {
     useEffect(() => {
         const fetchMessages = async () => {
             try {
-            /*
+            
               const response = await axios.get(`/chat/${chat_id}`, {
                 headers: {
                   Authorization: `Bearer ${localStorage.getItem('access_token')}`,
@@ -135,7 +136,7 @@ const Chat = () => {
                 },
               });
               setMessages(response.data.message_list);
-              */
+              
 
               //더미임
               if(chat_id != 123412412) {
@@ -171,8 +172,8 @@ const Chat = () => {
             });
         }, 1500);
         
-        //백엔드 연결시 사용
-        /*
+        
+        
         try {
           const response = await axios.post(`/chat/${chat_id}/chat_complete`, {}, {
             headers: {
@@ -197,7 +198,7 @@ const Chat = () => {
             setError('An unexpected error occurred. Please try again later.');
           }
         }
-          */
+          
     };
   
     return (

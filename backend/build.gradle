@@ -39,8 +39,10 @@ dependencies {
     runtimeOnly 'org.postgresql:postgresql:42.7.5'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'com.google.api-client:google-api-client:2.2.0'
+    implementation 'com.google.http-client:google-http-client:1.43.3'
+    implementation 'com.google.http-client:google-http-client-jackson2:1.43.3'
 }
-
 tasks.named('test') {
     useJUnitPlatform()
 }
