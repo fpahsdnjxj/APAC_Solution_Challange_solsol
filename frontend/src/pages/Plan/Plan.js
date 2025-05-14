@@ -33,11 +33,9 @@ const Plan = () => {
       //이건 더미
         setPlanData(DUMMY_PLAN_DATA);
 
-      // 이 아래는 백엔드 연결 시 사용
-      /*
 
       try {
-        const token = localStorage.getItem('access_token');
+        const token = localStorage.getItem('accessToken');
         if (!token) {
           setError('Login required.');
           return;
@@ -60,7 +58,6 @@ const Plan = () => {
           setError('An error occurred while retrieving export list');
         }
       }
-        */
     };
 
     fetchPlanData();
@@ -76,27 +73,14 @@ const Plan = () => {
     };
 
     try {
-      // 더미 데이터
-      const response = {
-        data: {
-          type : "marketing",
-          chatid: 12432423,
-          title: "유채꽃 마케팅 기획서",
-          keyword: ["한옥", "전통음식", "관광"]
-        }
-      };
 
       // 백엔드 연결 시 이쪽 사용
-      /*
-      const token = localStorage.getItem('access_token');
       const response = await axios.post(`/export/${chat_id}/marketing_chat`, bodyData, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
           'Content-Type': 'application/json',
         },
       });
-      */
-      
 
       const { type, chatid, title, keyword } = response.data;
       navigate(`/chat/${chatid}`, {
@@ -177,11 +161,6 @@ const Plan = () => {
             </div>
           </div>
 
-          <div className="image-gallery">
-            {planData.image_urls.map((url, index) => (
-              <img src={url} alt={`Image ${index + 1}`} key={index} />
-            ))}
-          </div>
 
           <div className="link-gallery">
             {planData.link_urls.map((link, index) => (
