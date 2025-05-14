@@ -42,5 +42,6 @@ src/main/resources/firebase-service-account.json
 # Application secrets
 application-secret.properties
 
-app.jar.gz
+app.tar.gz
+app.jar
 
