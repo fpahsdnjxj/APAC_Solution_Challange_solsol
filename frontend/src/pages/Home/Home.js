@@ -105,18 +105,18 @@ const Home = () => {
 
 
     useEffect(() => {
-        /*
-        const token = localStorage.getItem('access_token');
+        
+        const token = localStorage.getItem('accessToken');
         if (!token) {
             setError('로그인이 필요합니다.');
             return;
         }
-        */
+        
         console.log('로컬 더미 데이터 테스트');
         setExportList(DUMMY_EXPORTS);
         setChatList(DUMMY_CHATS);  
 
-        /*
+        
         const fetchExportList = async () => {
             try {
                 const response = await axios.get('/export', {
@@ -137,10 +137,10 @@ const Home = () => {
         };
 
         fetchExportList();
-        */
-       /*
+        
+       
         const fetchChatList = async () => {
-          const token = localStorage.getItem('access_token');
+          const token = localStorage.getItem('accessToken');
           if (!token) {
             setError('로그인이 필요합니다.');
             return;
@@ -154,7 +154,7 @@ const Home = () => {
               },
             });
     
-            setChatList(response.data.chat_list);
+            setChatList(response.data.chatList);
           } catch (err) {
             console.error('채팅 목록 로딩 오류:', err);
             if (err.response && err.response.status === 401) {
@@ -166,7 +166,7 @@ const Home = () => {
         };
     
         fetchChatList();
-        */
+        
     }, []);
 
     const handleCreateChat = () => {
