@@ -1,5 +1,5 @@
 import React, { useState, useRef,useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import './Chat.css';
 
@@ -13,6 +13,7 @@ const Chat = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');  
     const messageEndRef = useRef(null); 
+    const location = useLocation(); 
 
     //더미 부분
     const DUMMY_MESSAGE_LIST = [
@@ -183,15 +184,17 @@ const Chat = () => {
             }
           });
     
-          const { type, title, keyword } = response.data;
+          const { message } = response.data;
+          const { type, title, keywords } = location.state || {};
 
           navigate(`/plan/${chat_id}`, {
             state: {
-              type,            // 핵심 포인트
+              type,          
               title,
               keywords: keyword,
             }
           });
+          setLoading(false);
         } catch (error) {
           console.error('Error completing chat:', error);
           if (error.response && error.response.status === 401) {
@@ -205,6 +208,7 @@ const Chat = () => {
           }
         }
           */
+        setLoading(false);
     };
   
     return (

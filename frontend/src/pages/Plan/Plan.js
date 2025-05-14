@@ -21,8 +21,6 @@ const Plan = () => {
     title: "유채꽃 관광상품 기획",
     content: "## 유채꽃 관광상품 기획\n\n유채꽃길을 따라 걷는 산책 코스...",
     image_urls: [
-      "https://cdn.example.com/uploads/jeju1.jpg",
-      "https://cdn.example.com/uploads/jeju2.jpg"
     ],
     link_urls: [
       "https://kto.or.kr/festival/jeju_canola"
@@ -34,10 +32,11 @@ const Plan = () => {
     const fetchPlanData = async () => {
       //이건 더미
         setPlanData(DUMMY_PLAN_DATA);
-        console.log("✅ planData.content:", DUMMY_PLAN_DATA.content); // 여기 추가
+        console.log("✅ planData.content:", DUMMY_PLAN_DATA.content);
+        console.log('typeof planData.content:', typeof planData.content);
 
-        // 백엔드 연결 시 사용
-        /*
+      // 이 아래는 백엔드 연결 시 사용
+      /*
 
       try {
         const token = localStorage.getItem('access_token');
@@ -69,11 +68,8 @@ const Plan = () => {
     fetchPlanData();
   }, [chat_id]);
 
-
-
   const handleMarketingChat = async () => {
-    if (!planData) return;
-    setLoading(true);
+    if (!planData) return setLoading(true);
 
     const bodyData = {
       content: planData.content,
@@ -102,6 +98,7 @@ const Plan = () => {
         },
       });
       */
+      
 
       const { type, chatid, title, keyword } = response.data;
       navigate(`/chat/${chatid}`, {
@@ -126,6 +123,7 @@ const Plan = () => {
       
     }
   };
+
   const handlePdfDownload = async () => {
         if (!contentRef.current) return;
 
@@ -158,11 +156,9 @@ const Plan = () => {
     return <div>Loading...</div>;
   }
 
-  const markdownString = typeof planData.content === 'string'
-  ? planData.content
-  : planData.content?.value || '';
+  const markdownString = planData?.content || '';
 
-  
+  const createdAt = new Date(planData.created_at).toLocaleString();
 
   return (
     <div className="plan-wrapper">
@@ -170,15 +166,15 @@ const Plan = () => {
             <img src="/home.png" alt="홈" />
         </button>
         <div>
-            <p className='time'>{new Date(planData.created_at).toLocaleString()}</p>   
+            <p className="time">Created at: {createdAt}</p>
         </div>
         <div ref={contentRef}>
           <div className="content">
-            <div className="content-text">
-            {typeof markdownString === 'string' ? (
+            <div className="content-text">   
+              {planData ? (
               <ReactMarkdown>{markdownString}</ReactMarkdown>
             ) : (
-              markdownString
+              <p>Loading content...</p>
             )}
             </div>
           </div>
