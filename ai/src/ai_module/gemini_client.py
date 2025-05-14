@@ -1,6 +1,5 @@
 import google.generativeai as genai
 import os
-from .prompt_templates import tourism_plan_prompt
 from .utils import generate_title_and_keywords_from_markdown
 from schema.request import Message
 api_key = os.getenv("GEMINI_API_KEY")
@@ -10,6 +9,7 @@ gemini_client = genai.GenerativeModel(model_name="gemini-1.5-pro-latest")
 
 # 관광 상품 기획서 생성 함수
 def generate_tourism_plan(info: dict) -> str:
+    from .prompt_templates import tourism_plan_prompt
     prompt = tourism_plan_prompt.format(
         title=info["title"],
         detail_info=info["detail_info"],
