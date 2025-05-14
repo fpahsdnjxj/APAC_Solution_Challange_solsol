@@ -1,4 +1,5 @@
 from .marketing_trends import integrate_marketing_trends
+from .gemini_client import gemini_client
 #기획서 프롬프트 
 tourism_plan_prompt = """
 너는 관광 마케팅 전문가이자, 실제 마케팅 기획서를 작성하는 실무 담당자야.
