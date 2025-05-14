@@ -37,7 +37,6 @@ const Chat = () => {
     ];
 
     const DUMMY_USER_MESSAGE = {
-        sender_role: 'user',
         content_text: '제주 서귀포시 유채꽃 축제는 언제 열리니?',
         image_urls: []
       };
@@ -47,6 +46,8 @@ const Chat = () => {
         content_text: '제주 유채꽃 축제는 매년 4월에 열립니다. [[출처1]]',
         links: ['https://kto.or.kr/festival/jeju_canola']
       };
+
+    //
   
     const handleMessageChange = (e) => {
       setUserMessage(e.target.value);
@@ -61,15 +62,16 @@ const Chat = () => {
       ];
       setMessages(newMessages);
       setUserMessage('');
-  
       setLoading(true);
 
       //더미임
       setTimeout(() => {
         const aiResponse = {
+          // ... 
+          //여기는 더미, 위에 ...을 실제 사용
           sender_role: 'ai',
           content_text: "제주 유채꽃 축제는 매년 4월에 열립니다. [[출처1]]",
-          links: ["https://kto.or.kr/festival/jeju_canola"],  // 추가된 URL
+          links: ["https://kto.or.kr/festival/jeju_canola"],
         };
         setMessages([...newMessages, aiResponse]);
         setLoading(false);
@@ -80,7 +82,7 @@ const Chat = () => {
         try {
             const response = await axios.post(`/chat/${chat_id}`, {
                 content_text: userMessage,
-                image_urls: []  // 이미지가 필요하면 여기에 추가
+                image_urls: [] 
             }, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('access_token')}`,
@@ -88,27 +90,25 @@ const Chat = () => {
                 }
             });
 
-            const { content_text, links } = response.data;  // 응답에서 내용과 링크를 받음
-            setAiMessage({
-                content_text: content_text,
-                links: links || [],  // 링크가 없을 수도 있기 때문에 기본값 설정
-            });
-
-        } catch (error) {
+            const { content_text, links } = response.data; 
+            const aiResponse = {
+                sender_role: 'ai',
+                content_text,
+                links: links || [],
+            };
+            setMessages([...newMessages, aiResponse]);
+          } catch (error) {
             console.error('error:', error);
 
-            // 401 Unauthorized 처리
             if (error.response && error.response.status === 401) {
                 setError('Access token is missing or invalid');
             }
             else if (error.response && error.response.status === 404) {
                 setError(`Chat with id '${chat_id}' not found.`);
             }    
-            // 500 Internal Server Error 처리
             else if (error.response && error.response.status === 500) {
                 setError('An error occurred while retrieving export list');
             }
-            // 그 외의 오류 처리
             else {
                 setError('AI response failed. Please try again later.');
             }
@@ -119,7 +119,7 @@ const Chat = () => {
 
     const handleKeyDown = (e) => {
         if (e.key === "Enter" && userMessage.trim() !== "") {
-          e.preventDefault();  // 기본 엔터 동작(줄바꿈)을 방지
+          e.preventDefault();
           handleSendMessage();
         }
     };
@@ -159,7 +159,9 @@ const Chat = () => {
             fetchMessages();
           }
       
-        messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+          if (messages.length > 0) {
+            messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+          }
     }, [messages]);
 
     const handleChatComplete = async () => {
@@ -181,10 +183,15 @@ const Chat = () => {
             }
           });
     
-          if (response.data.message) {
-            alert(`Chat ${chat_id} is completed successfully!`);
-            navigate(`/plan/${chat_id}`); 
-          }
+          const { type, title, keyword } = response.data;
+
+          navigate(`/plan/${chat_id}`, {
+            state: {
+              type,            // 핵심 포인트
+              title,
+              keywords: keyword,
+            }
+          });
         } catch (error) {
           console.error('Error completing chat:', error);
           if (error.response && error.response.status === 401) {

@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate , useLocation} from 'react-router-dom';
 import axios from 'axios';
 import './Plan.css';
 
 const Plan = () => {
-  const { chat_id } = useParams(); // Get the chat ID from the URL
+  const { chat_id } = useParams();
+  const location = useLocation();
   const [planData, setPlanData] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { type, title, keywords } = location.state || {};
 
   //더미임
   const DUMMY_PLAN_DATA = {
@@ -63,7 +65,6 @@ const Plan = () => {
 
   const handleMarketingChat = async () => {
     if (!planData) return;
-
     setLoading(true);
 
     const bodyData = {
@@ -73,17 +74,7 @@ const Plan = () => {
     };
 
     try {
-      // Replace this with the actual API request
-      /*
-      const response = await axios.post(`/export/${chat_id}/marketing_chat`, bodyData, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-          'Content-Type': 'application/json',
-        },
-      });
-      */
-
-      // Simulate successful response
+      // 더미 데이터
       const response = {
         data: {
           type : "marketing",
@@ -93,14 +84,26 @@ const Plan = () => {
         }
       };
 
-      console.log('Marketing Chat Created:', response);
-
-      // Navigate to the new chat page with the new chat ID and other details
       navigate(`/chat/${response.data.chatid}`, {
-        state: { title: response.data.title, keywords: response.data.keyword },
+        state: { type:response.data.type, title: response.data.title, keywords: response.data.keyword },
       });
 
       setLoading(false);
+      // 백엔드 연결 시 이쪽 사용
+      /*
+      const response = await axios.post(`/export/${chat_id}/marketing_chat`, bodyData, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const { type, chatid, title, keyword } = response.data;
+      navigate(`/chat/${chatid}`, {
+        state: { type, title, keywords: keyword },
+      });
+      setLoading(false);
+      */
     } catch (error) {
       console.error('Error creating marketing chat:', error);
 
@@ -115,6 +118,7 @@ const Plan = () => {
       }
 
       setLoading(false);
+      
     }
   };
   const handleButtonClick = () => {

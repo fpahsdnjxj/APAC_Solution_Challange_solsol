@@ -84,20 +84,20 @@
   
   .plus-sign {
     position: absolute;
-    top: 0px;  /* 상단에 위치하도록 조정 */
+    top: 0px; 
     font-size: 36px;
     color: #ffffff;
     font-weight: bold;
-    z-index: 10;  /* 텍스트가 인풋 필드 위로 오게 설정 */
+    z-index: 10; 
   }
   
   input[type="file"] {
     width: 100%;
     height: 100%;
-    opacity: 0; /* 인풋 필드를 숨기기 */
-    position: absolute; /* + 기호 위에 위치 */
-    z-index: 5; /* input이 + 기호 밑에 오도록 설정 */
-    cursor: pointer; /* 클릭 시 파일 선택 가능 */
+    opacity: 0; 
+    position: absolute;
+    z-index: 5;
+    cursor: pointer; 
   }
 
   .preview-wrapper.multi {
