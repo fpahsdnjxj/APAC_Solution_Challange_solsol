@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useRef  } from 'react';
 import { useParams, useNavigate , useLocation} from 'react-router-dom';
 import axios from 'axios';
+import ReactMarkdown from 'react-markdown';
+import html2pdf from 'html2pdf.js';
 import './Plan.css';
 
 const Plan = () => {
@@ -10,7 +12,8 @@ const Plan = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { type, title, keywords } = location.state || {};
+  const { type, title, keywords  } = location.state || {};
+  const contentRef = useRef();
 
   //더미임
   const DUMMY_PLAN_DATA = {
@@ -29,16 +32,19 @@ const Plan = () => {
 
   useEffect(() => {
     const fetchPlanData = async () => {
+      //이건 더미
         setPlanData(DUMMY_PLAN_DATA);
+        console.log("✅ planData.content:", DUMMY_PLAN_DATA.content); // 여기 추가
+
         // 백엔드 연결 시 사용
         /*
-      const token = localStorage.getItem('access_token');
-      if (!token) {
-        setError('Login required.');
-        return;
-      }
 
       try {
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+          setError('Login required.');
+          return;
+        }
         const response = await axios.get(`/export/${chat_id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -63,6 +69,8 @@ const Plan = () => {
     fetchPlanData();
   }, [chat_id]);
 
+
+
   const handleMarketingChat = async () => {
     if (!planData) return;
     setLoading(true);
@@ -84,26 +92,23 @@ const Plan = () => {
         }
       };
 
-      navigate(`/chat/${response.data.chatid}`, {
-        state: { type:response.data.type, title: response.data.title, keywords: response.data.keyword },
-      });
-
-      setLoading(false);
       // 백엔드 연결 시 이쪽 사용
       /*
+      const token = localStorage.getItem('access_token');
       const response = await axios.post(`/export/${chat_id}/marketing_chat`, bodyData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('access_token')}`,
           'Content-Type': 'application/json',
         },
       });
+      */
 
       const { type, chatid, title, keyword } = response.data;
       navigate(`/chat/${chatid}`, {
         state: { type, title, keywords: keyword },
       });
       setLoading(false);
-      */
+      
     } catch (error) {
       console.error('Error creating marketing chat:', error);
 
@@ -121,11 +126,27 @@ const Plan = () => {
       
     }
   };
+  const handlePdfDownload = async () => {
+        if (!contentRef.current) return;
+
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      
+        html2pdf()
+          .from(contentRef.current)
+          .set({
+            margin: 1,
+            filename: `${planData.title || 'plan'}.pdf`,
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' },
+          })
+          .save();
+  };
+
   const handleButtonClick = () => {
     if (planData?.type === 'planning') {
       handleMarketingChat(); 
     } else {
-      //pdf 생성 안 넣어요?
+      handlePdfDownload();
     }
   };
 
@@ -137,43 +158,52 @@ const Plan = () => {
     return <div>Loading...</div>;
   }
 
+  const markdownString = typeof planData.content === 'string'
+  ? planData.content
+  : planData.content?.value || '';
+
+  
+
   return (
     <div className="plan-wrapper">
         <button className="home-button" onClick={() => navigate('/')}>
             <img src="/home.png" alt="홈" />
         </button>
         <div>
-            <h1>{planData.title}</h1>
             <p className='time'>{new Date(planData.created_at).toLocaleString()}</p>   
         </div>
-      <div className="content">
-        <h2>Content</h2>
-        <div
-          className="content-text"
-          dangerouslySetInnerHTML={{ __html: planData.content }}
-        />
-      </div>
+        <div ref={contentRef}>
+          <div className="content">
+            <div className="content-text">
+            {typeof markdownString === 'string' ? (
+              <ReactMarkdown>{markdownString}</ReactMarkdown>
+            ) : (
+              markdownString
+            )}
+            </div>
+          </div>
 
-      <div className="button-wrapper">
-        <button onClick={handleButtonClick}>
-          {planData.type === 'marketing' ? 'Generate PDF' : <img src="/doc.png" alt="icon" />}
-        </button>
-      </div>
+          <div className="image-gallery">
+            {planData.image_urls.map((url, index) => (
+              <img src={url} alt={`Image ${index + 1}`} key={index} />
+            ))}
+          </div>
 
-      <div className="image-gallery">
-        {planData.image_urls.map((url, index) => (
-          <img src={url} alt={`Image ${index + 1}`} key={index} />
-        ))}
-      </div>
+          <div className="link-gallery">
+            {planData.link_urls.map((link, index) => (
+              <a href={link} target="_blank" rel="noopener noreferrer" key={index}>
+                {link}
+              </a>
+            ))}
+          </div>
+        </div>
 
-      <div className="link-gallery">
-        {planData.link_urls.map((link, index) => (
-          <a href={link} target="_blank" rel="noopener noreferrer" key={index}>
-            {link}
-          </a>
-        ))}
+        <div className="button-wrapper">
+          <button onClick={handleButtonClick}>
+            {planData.type === 'marketing' ? 'Generate PDF' : <img src="/doc.png" alt="icon" />}
+          </button>
+        </div>
       </div>
-    </div>
   );
 };
 
