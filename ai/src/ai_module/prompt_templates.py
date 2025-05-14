@@ -1,4 +1,3 @@
-from .marketing_trends import integrate_marketing_trends
 from .gemini_client import gemini_client
 #기획서 프롬프트 
 tourism_plan_prompt = """
