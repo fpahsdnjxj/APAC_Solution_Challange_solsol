@@ -1,38 +1,96 @@
+from schema.response import Export, GenerateChat, MessageResponse
+from schema.request import MarketingExportRequest, MarketingRequest, Message, PlanningExportRequest, PreviousChatInfo
+from schema.request import PlanningRequest
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
-from ai_module.gemini_client import generate_tourism_plan
+from ai_module.gemini_client import generate_chat_response, generate_export_summary, generate_marketing_strategy, generate_tourism_plan
 from ai_module.utils import generate_title_and_keywords_from_markdown
 
-router = APIRouter()
+router = APIRouter(prefix="/api/ai")
 
-class PlanningRequest(BaseModel):
-    title: str
-    detail_info: str
-    location: str
-    image_urls: list[str]
-    keywords: list[str]
-    available_dates: str
-    duration: str
-    price: int
-    policy: str
+
 
 @router.post("/planning")
 async def planning(request: PlanningRequest):
+    """
     try:
         info = request.dict()
-
-        # 1. 관광 기획서 마크다운 생성
         plan_markdown = generate_tourism_plan(info)
-
-        # 2. 제목과 키워드 추출
         meta = generate_title_and_keywords_from_markdown(plan_markdown)
-
-        # 3. 필요한 정보만 응답
-        return {
-            "title": meta["title"],
-            "keyword": meta["keyword"]
-        }
-
+        return GenerateChat(title=meta["title"], keywords=meta["keyword"])
+    
     except Exception as e:
         print(f"❌ Error: {e}")
         raise HTTPException(status_code=500, detail="An error occurred while generating the plan")
+        """
+    return GenerateChat(title="연결 확인용", keywords=[])
+
+
+@router.post("/marketing")
+async def marketing(request: MarketingRequest):
+    """
+    try:
+        info=request.dict()
+        marketing_markdown=generate_marketing_strategy(info)
+        meta = generate_title_and_keywords_from_markdown(marketing_markdown)
+        return GenerateChat(title=meta["title"], keywords=meta["keyword"])
+
+    except Exception as e:
+        print(f"Error: {e}")
+        raise HTTPException(status_code=500, detail="An error occurred while generating the marketing chat")
+    """
+    return GenerateChat(title="연결 확인용", keywords=[])
+
+@router.post("/message")
+async def send_message(request: PreviousChatInfo):
+    """
+    try:
+        message = generate_chat_response(request.previous_message_list, request.current_message)
+        response_message = Message(
+            sender_role="ai",
+            content_text=message,
+            links=[],
+            image_urls=[]
+        )
+        return MessageResponse(message=response_message)
+    
+    except Exception as e:
+        print(f"Error: {e}")
+        raise HTTPException(status_code=500, detail="An error occurred while generating the response")
+    """
+    response_message = Message(
+            sender_role="ai",
+            content_text="연결 확인용",
+            links=[],
+            image_urls=[]
+        )
+    return MessageResponse(message=response_message)
+
+@router.post("/planning_export")
+async def export_final(request: PlanningExportRequest):
+    """
+    try:
+        message=generate_export_summary(PreviousChatInfo.previous_message_list, PreviousChatInfo.current_message)
+        return Export(content=message, image_urls=[], links=[])
+    
+    except Exception as e:
+        print(f"Error: {e}")
+        raise HTTPException(status_code=500, detail="An error occurred while generating the response")
+    """
+    return Export(content="연결 확인용", image_urls=[], links=[])
+
+@router.post("/marketing_export")
+async def export_final(request: MarketingExportRequest):
+    """
+    try:
+        message=generate_export_summary(PreviousChatInfo.previous_message_list, PreviousChatInfo.current_message)
+        return Export(content=message, image_urls=[], links=[])
+    
+    except Exception as e:
+        print(f"Error: {e}")
+        raise HTTPException(status_code=500, detail="An error occurred while generating the response")
+    """
+    return Export(content="연결 확인용", image_urls=[], links=[])
+
+
+    
+

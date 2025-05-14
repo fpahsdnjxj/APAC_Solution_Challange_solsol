@@ -8,6 +8,7 @@ import Plan from './pages/Plan/Plan';
 import Login from './pages/Login/Login';
 import SignUp from './pages/SignUp/SignUp';
 import Form from './pages/Form/Form';
+import OAuthSuccess from './pages/OAuthSuccess';
 
 function App() {
   console.log({ Header, Footer, Home, Chat, Plan, Login, SignUp, Form });
@@ -23,6 +24,7 @@ function App() {
           <Route path="/form" element={<Form />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
+          <Route path="/oauth-success" element={<OAuthSuccess/>}/>
         </Routes>
       </main>
     </Router>

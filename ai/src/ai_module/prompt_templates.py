@@ -1,5 +1,4 @@
-from ai_module.marketing_trends import integrate_marketing_trends
-from ai_module.gemini_client import gemini_client
+from .marketing_trends import integrate_marketing_trends
 
 #기획서 프롬프트 
 tourism_plan_prompt = """
@@ -77,64 +76,82 @@ def generate_tourism_plan(title, detail_info, location, image_urls, keywords, av
 
     return result
 
-# 마케팅 전략서 프롬프트 (세린님이 수정하실 예정) 
+
 # 마케팅 전략서 프롬프트
-def generate_marketing_plan(title, detail_info, location, image_urls, keywords, available_dates, duration, price, policy):
-    marketing_plan_prompt = """
-    너는 관광 마케팅 전문가이자, 실제 마케팅 기획서를 작성하는 실무 담당자야.
-    아래의 관광상품 정보를 기반으로 **SNS, 블로그, 바이럴 중심의 마케팅 전략**을
-    **Markdown 문서 형식**으로 작성해 줘.
+marketing_strategy_prompt_template = """
+당신은 관광 마케팅 전략 전문가입니다. 아래 제공된 관광상품 정보를 바탕으로, 실무 수준의 마케팅 전략서를 작성해 주세요. 전략서는 논리적이고 구체적으로 작성되며, 실제 관계자에게 제안할 수 있는 수준으로 구성되어야 합니다.
 
-    ## 출력 형식:
-    - 모든 항목은 Markdown 제목(##, ###)으로 구분
-    - 표와 리스트를 활용해 가독성 있게 작성
-    - 형식은 깔끔하고 일관성 있게
-    - 실무자가 그대로 활용 가능한 수준으로 구체적이고 간결하게
-    - 트렌드 키워드 단순 나열이 아닌, 각 트렌드를 분석하여 구체적인 마케팅 전략으로 제시
-    - 전문적이고 실무적 어조 사용, 실제 제안서처럼 체계적으로 구성
+---
 
-    ---
+## [상품 정보]
 
-    ## [관광상품 기획서] {title}
+- **상품 제목:** {title}
+- **상세 설명:** {detail_info}
+- **여행지 위치:** {location}
+- **이미지 URL 목록:** 
+{image_urls}
+- **핵심 키워드:** {keywords}
+- **운영 일자:** {available_dates}
+- **소요 시간:** {duration}
+- **가격 정보:** {price}
+- **환불 및 정책:** {policy}
 
-    ### 1. 타깃 고객
-    - 어떤 세대/성향의 고객에게 어필할 수 있는지
-    - 고객이 어떤 욕구(예: sns 감성 중시, 자연 체험 중시)로 이 상품을 선택할지 간단히 설명
+---
 
-    ### 2. 상품 개요
-    - **상품 제목**: {title}
-    - **상세 설명**: {detail_info}
-    - **장소**: {location}
-    - **이미지 URL**: {image_urls}
-    - **키워드**: {keywords}
-    - **이용 가능 날짜**: {available_dates}
-    - **소요 시간**: {duration}
-    - **가격**: {price}원
-    - **환불 정책**: {policy}
+## [마케팅 전략서 작성 지침]
 
-    ### 3. 주요 홍보 채널
-    | 채널 | 콘텐츠 형식 | 추천 이유 |
-    |------|-------------|------------|
-    | 예: Instagram | 릴스 15초 영상 | 감성 공유 욕구 자극 |
+아래 항목들을 포함하여 전략서를 작성하세요:
 
-    ### 4. 운영 계획
-    - 체험단 운영, 해시태그 이벤트, 타임세일 등
-    - 실행 일정 예시와 목표 (KPI)가 있다면 함께 제시
+1. **핵심 타겟 고객층**  
+   - 나이, 성별, 여행 목적, 여행 스타일 등으로 세분화  
+   - 어떤 고객에게 특히 매력적일지 논리적으로 설명
 
-    ### 5. 해시태그 추천
-    - 마케팅 효과를 고려한 검색량 높은 해시태그 4~5개
+2. **마케팅 목표 설정**  
+   - 예: 초기 3개월 내 SNS 노출 5만 회, 예약 전환율 5% 달성  
+   - 이 목표를 설정한 이유와 기대 효과를 설명
 
-    ---
+3. **홍보 채널 및 활용 전략**  
+   - Instagram, TikTok, YouTube, 블로그, 지역 플랫폼 등  
+   - 각 채널의 특성과 활용 방식 제안 (예: 인스타 릴스 vs 블로그 리뷰)
 
-    출력은 반드시 **Markdown 형식** 원본 그대로!
-    기획서는 반드시 **최신 마케팅 트렌드**를 반영해줘.
-    """
+4. **콘텐츠 전략**  
+   - 타겟에 맞춘 콘텐츠 유형 제안 (예: 감성 사진, 가족 여행 브이로그 등)  
+   - 콘텐츠 예시 포함 (제목, 내용 요약 형식)
 
+5. **인플루언서/제휴 마케팅 방안**  
+   - 어떤 인플루언서 또는 지역 브랜드와 협업할 수 있는지 제안  
+   - 공동 마케팅 캠페인 아이디어 포함
 
-    # 트렌드 삽입
-    prompt_with_trends = integrate_marketing_trends(marketing_plan_prompt)
+6. **예산 계획 (간략)**  
+   - 콘텐츠 제작, 광고비, 제휴 비용 등의 항목별 대략적 범위  
+   - ROI(투자 대비 수익) 관점에서 효율적인 집행 방향 제시
 
-    # Gemini 호출
-    response = gemini_client.generate_content(prompt_with_trends)
-    generated_plan = response.text 
-    return generated_plan
+7. **성과 지표 (KPI)**  
+   - 어떤 지표로 성과를 측정할지 (예: 유입 수, 전환율, SNS 노출 수 등)  
+   - 목표 수치 예시와 그 의미
+
+---
+
+## [형식]
+
+- 각 항목은 제목을 달고 **명확한 문단 형식**으로 작성
+- 말투는 전문가 보고서처럼 정중하고 직설적으로 유지
+- 필요 시 마케팅 관련 용어와 이론적 근거 활용
+"""
+
+def marketing_strategy_prompt(title, detail_info, location, image_urls, keywords, available_dates, duration, price, policy):
+
+    filled_prompt = marketing_strategy_prompt.format(
+        title=title,
+        detail_info=detail_info,
+        location=location,
+        image_urls=image_urls,
+        keywords=keywords,
+        available_dates=available_dates,
+        duration=duration,
+        price=price,
+        policy=policy
+    )
+
+    result = gemini_client.generate_content(filled_prompt)
+    return result
