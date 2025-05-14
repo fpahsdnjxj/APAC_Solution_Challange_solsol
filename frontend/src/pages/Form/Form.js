@@ -3,20 +3,24 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Form.css';
 
+//더미. 백엔드 연결시 삭제하기
 const DUMMY_FORM_DATA = {
-  title: "유채꽃 관광상품 기획",
-  detail_info: "유채꽃길을 따라 걷는 산책 코스",
-  location: "제주 서귀포시",
+  title: "Canola Flower Tourism Package Planning",
+  detail_info: "A walking course along the canola flower path",
+  location: "Seogwipo-si, Jeju Island",
   photoUrls: [
     { preview: "https://cdn.example.com/uploads/jeju1.jpg" },
     { preview: "https://cdn.example.com/uploads/jeju2.jpg" },
   ],
-  keywords: ["한옥", "전통음식"],
-  available_dates: "월 09:00 ~ 18:00, 화 09:00 ~ 18:00, 수 휴무, ...", // 실제 형식대로 처리
+  keywords: ["Hanok", "Traditional Food"],
+  available_dates: "Mon 09:00 ~ 18:00, Tue 09:00 ~ 18:00, Wed Closed, ...", // 실제 형식대로 처리
   duration: "2시간",
   price: 30000,
-  policy: "하루 전까지 취소 가능"
+  policy: "Cancellable up to one day in advance"
 };
+//
+
+
 
 const Form = () => {
     const navigate = useNavigate();
@@ -35,140 +39,8 @@ const Form = () => {
 
   const [showExtra, setShowExtra] = useState(false);
   const [uploadError, setUploadError] = useState('');
-
-
-  const handleChange = async (e) => {
-    const { name, value, files } = e.target;
-    if (name === 'photo' && files.length > 0) {
-      const selectedFiles = Array.from(files);
-
-      const urls = selectedFiles.map(file => ({
-        preview: URL.createObjectURL(file),
-      }));
-  
-      setFormData(prev => ({
-        ...prev,
-        photoUrls: [...prev.photoUrls, ...urls]
-      }));
-  
-      setUploadError('');
-
-      /*
-      const token = localStorage.getItem('access_token');
-      const uploads = selectedFiles.map(async (file) => {
-        const formDataToSend = new FormData();
-        formDataToSend.append('file', file);
-        const res = await axios.post('/upload/image', formDataToSend, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data',
-          },
-        });
-        return res.data.url;
-      });
-
-      const uploadedUrls = await Promise.all(uploads);
-      setFormData(prev => ({
-        ...prev,
-        photoUrls: [...prev.photoUrls, ...uploadedUrls]
-      }));
-      */
-
-    } else {
-      setFormData(prev => ({ ...prev, [name]: value }));
-    }
-  };
-
-  const handleRemoveImage = (index) => {
-    setFormData(prev => ({
-      ...prev,
-      photoUrls: prev.photoUrls.filter((_, i) => i !== index),
-    }));
-  };
-  
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const formattedSchedule = formatSchedule(formData.available_dates);
-    const duration = `${formData.hours}시간 ${formData.minutes}분`;
-    //로컬 데이터. 백엔드 연결 시 삭제
-    const payload = {
-      title: formData.title,
-      detail_info: formData.detail_info,
-      location: formData.location,
-      image_urls: formData.photoUrls.map(img => img.preview),
-      keywords: formData.keywords,
-      available_dates: formattedSchedule,
-      duration: duration,
-      price: Number(formData.price),
-      policy: formData.policy,
-    };
-    console.log('로컬 테스트용 제출 데이터:', payload);
-
-    const dummyChatId = 123412412;
-    const dummyTitle = "유채꽃 관광상품 기획서";
-    const dummyKeywords = ["키워드1", "키워드2", "키워드3"];
-
-    navigate(`/chat/${dummyChatId}`, {
-      state: { title: dummyTitle, keywords: dummyKeywords }
-    });
-
-
-    /*
-    const token = localStorage.getItem('access_token');
-    const formToSend = new FormData();
-
-    formToSend.append('title', formData.name);
-    formToSend.append('detail_info', formData.description);
-    formToSend.append('location', formData.location);
-    formToSend.append('image_urls', JSON.stringify([formData.photoUrls]));
-    formToSend.append('keywords', JSON.stringify(formData.keywords));
-    formToSend.append('available_dates', formattedSchedule); // 날짜 추후 가공
-    formToSend.append('duration', duration);
-    formToSend.append('price', parsedPrice);
-    formToSend.append('policy', formData.policy);
-
-    try {
-      const response = await axios.post('/planing_chat', formToSend, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-
-      const { chat_id, title, keyword } = response.data;
-      navigate(`/chat/${chat_id}`, {
-        state: { title, keyword }
-      });
-    } catch (error) {
-      console.error('Submission error:', error);
-      if (error.response) {
-        // 서버에서 응답이 있으면 해당 응답 처리
-        if (error.response.status === 401) {
-          alert('Unauthorized: Please log in first.');
-        } else if (error.response.status === 500) {
-          alert('Server error occurred. Please try again later.');
-        } else {
-          alert('An error occurred during submission.');
-        }
-      } else {
-        alert('Network error. Please check your internet connection.');
-      }
-    }
-    */
-  
-  };
-
-  const formatSchedule = (scheduleObj) => {
-    return scheduleObj.split(',').map(item => {
-      const [day, time] = item.trim().split(' ');
-      return `${day} ${time}`; // 예: "월 09:00 ~ 18:00"
-    }).join(', ');
-  };
-  
-  const weekdays = ['월', '화', '수', '목', '금', '토', '일'];
-  
+  const weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    
   const [schedule, setSchedule] = useState(
     weekdays.reduce((acc, day) => {
       acc[day] = {
@@ -179,7 +51,7 @@ const Form = () => {
       return acc;
     }, {})
   );
-  
+
   const handleToggle = (day) => {
     setSchedule((prev) => ({
       ...prev,
@@ -201,7 +73,7 @@ const Form = () => {
   };
 
   const handlePriceChange = (e) => {
-    let raw = e.target.value.replace(/[^0-9]/g, ''); // 숫자만 추출
+    let raw = e.target.value.replace(/[^0-9]/g, '');
     setFormData(prev => ({
       ...prev,
       price: raw,
@@ -210,32 +82,164 @@ const Form = () => {
 
   const formatPrice = (num) => {
     if (!num) return '';
-    return Number(num).toLocaleString() + ' 원';
+    return Number(num).toLocaleString() + ' Won';
   };
 
+  const handleChange = async (e) => {
+    const { name, value, files } = e.target;
+    if (name === 'photo' && files.length > 0) {
+      const selectedFiles = Array.from(files);
+      const urls = selectedFiles.map(file => ({
+        preview: URL.createObjectURL(file),
+      }));
+      setFormData(prev => ({
+        ...prev,
+        photoUrls: [...prev.photoUrls, ...urls]
+      }));
+      setUploadError('');
+    } else if ( name === 'keywords') {
+      setFormData(prev => ({
+        ...prev,
+        keywords: value.split(',').map(k => k.trim())
+      }));
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
+  };
+      
+      //백엔드 연결 시 여기 사용 (이미지 업로드 api)
+      /*
+      const token = localStorage.getItem('access_token');
+      const uploads = selectedFiles.map(async (file) => {
+        const formDataToSend = new FormData();
+        formDataToSend.append('file', file);
+        const res = await axios.post('/upload/image', formDataToSend, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        return res.data.url;
+      });
 
+      const uploadedUrls = await Promise.all(uploads);
+      setFormData(prev => ({
+        ...prev,
+        photoUrls: [...prev.photoUrls, ...uploadedUrls]
+      }));
+      */
+
+
+  const handleRemoveImage = (index) => {
+    setFormData(prev => ({
+      ...prev,
+      photoUrls: prev.photoUrls.filter((_, i) => i !== index),
+    }));
+  };
+
+  const formatScheduleFromUI = () => {
+    return weekdays
+      .filter(day => schedule[day].active)
+      .map(day => `${day} ${schedule[day].start} ~ ${schedule[day].end}`)
+      .join(', ');
+  };
+
+//더미임. 백엔드 연결 시 지우기
   useEffect(() => {
     setFormData(DUMMY_FORM_DATA);
   }, []);
+  //
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formattedSchedule = formatScheduleFromUI();
+    const duration = `${formData.hours}시간 ${formData.minutes}분`;
+    
+    //payload도 더미. 나중에 지우기
+    const payload = {
+      title: formData.title,
+      detail_info: formData.detail_info,
+      location: formData.location,
+      image_urls: formData.photoUrls.map(img => img.preview),
+      keywords: formData.keywords,
+      available_dates: formattedSchedule,
+      duration: duration,
+      price: Number(formData.price),
+      policy: formData.policy,
+    };
+    console.log('로컬 테스트용 제출 데이터:', payload);
+
+    const dummyType = "planning"
+    const dummyChatId = 123412412;
+    const dummyTitle = "유채꽃 관광상품 기획서";
+    const dummyKeywords = ["키워드1", "키워드2", "키워드3"];
+
+    navigate(`/chat/${dummyChatId}`, {
+      state: { type: dummyType, title: dummyTitle, keywords: dummyKeywords }
+    });
+
+    // 백엔드 연결 시 여기 사용 (폼 제출 api)
+    /*
+    const token = localStorage.getItem('access_token');
+    const formToSend = new FormData();
+
+    formToSend.append('title', formData.title);
+    formToSend.append('detail_info', formData.detail_info);
+    formToSend.append('location', formData.location);
+    formToSend.append('image_urls', JSON.stringify(formData.photoUrls.map(img => img.preview)));
+    formToSend.append('keywords', JSON.stringify(formData.keywords.split(',').map(k => k.trim())));
+    formToSend.append('available_dates', formattedSchedule);
+    formToSend.append('duration', duration);
+    formToSend.append('price', Number(formData.price));
+    formToSend.append('policy', formData.policy);
+
+    try {
+      const response = await axios.post('/planing_chat', formToSend, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      const { type, chat_id, title, keyword } = response.data;
+      navigate(`/chat/${chat_id}`, {
+        state: { type, title, keyword }
+      });
+    } catch (error) {
+      console.error('error:', error);
+      if (error.response) {
+        if (error.response.status === 401) {
+          alert('Access token is missing or invalid');
+        } else if (error.response.status === 500) {
+          alert('An error occurred while retrieving export list');
+        } else {
+          alert('An error occurred during submission');
+        }
+      } else {
+        alert('Network error. Please check your internet connection');
+      }
+    }
+    */
   
+  };
 
   return (
     <div className="form-container">
       <button className="back-button"onClick={() => navigate('/')}>
         <img src="/back.png" alt="돌아가기" />
       </button>
-      <h2 className="form-title">폼 작성</h2>
+      <h2 className="form-title">Form</h2>
       <form className="main-form" onSubmit={handleSubmit}>
-        <label>상품명*</label>
-        <input type="text" name="name" value={formData.title} onChange={handleChange} required />
+        <label>Title*</label>
+        <input type="text" name="title" value={formData.title} onChange={handleChange} required />
 
-        <label>상품 설명*</label>
-        <input type="text" name="description" value={formData.detail_info} onChange={handleChange} required />
+        <label>Detail Info*</label>
+        <input type="text" name="detail_info" value={formData.detail_info} onChange={handleChange} required />
 
-        <label>위치*</label>
+        <label>Location*</label>
         <input type="text" name="location" value={formData.location} onChange={handleChange} required />
 
-        <label>사진 첨부</label>
+        <label>Photo Upload</label>
         <div className="photo-upload">
           <div className="photo-box">
             <span className='plus-sign'>+</span>
@@ -247,7 +251,7 @@ const Form = () => {
                 <div key={index} className="preview-box">
                   <img
                     src={img.preview}
-                    alt={`업로드 ${index + 1}`}
+                    alt={`Upload ${index + 1}`}
                     className="preview-image"
                   />
                   <button
@@ -255,7 +259,7 @@ const Form = () => {
                     className="remove-image-button"
                     onClick={() => handleRemoveImage(index)}
                   >
-                    삭제
+                    Delete
                   </button>
                 </div>
               ))}
@@ -267,14 +271,16 @@ const Form = () => {
         </div>
 
         <div className="toggle-extra" onClick={() => setShowExtra(!showExtra)}>
-          {showExtra ? '▼ 추가 정보 입력하기' : '▶ 추가 정보 입력하기'}
+          {showExtra ? '▼ Add more details' : '▶ Add more details'}
         </div>
 
         {showExtra && (
           <div className="extra-fields">
-            <label>키워드/태그</label>
-              <input type="text" name="keywords" value={formData.keywords} onChange={handleChange}/>
-            <label>운영일시</label>
+            <label>Keyword/Tag</label>
+              <input type="text" name="keywords" 
+              value={Array.isArray(formData.keywords) ? formData.keywords.join(', ') 
+              : formData.keywords} onChange={handleChange}/>
+            <label>Operating Hours</label>
               <div className="weekday-schedule">
                 {weekdays.map((day) => (
                   <div className="day-row" key={day}>
@@ -283,7 +289,7 @@ const Form = () => {
                       checked={schedule[day].active}
                       onChange={() => handleToggle(day)}
                     />
-                    <label className="day-label">{day}요일</label>
+                    <label className="day-label">{day}</label>
 
                     <input
                       type="time"
@@ -307,35 +313,35 @@ const Form = () => {
               </div>
 
             <div className="extra">
-              <label>소요시간</label>
+              <label>Duration</label>
               <div className="extra-row">
                 
                 <div className="duration-wrapper">
                   <select name="hours" value={formData.hours} onChange={(e) => setFormData({ ...formData, hours: e.target.value })}>
-                    <option value="0">0시간</option>
-                    <option value="1">1시간</option>
-                    <option value="2">2시간</option>
-                    <option value="3">3시간</option>
+                    <option value="0">0 hours</option>
+                    <option value="1">1 hour</option>
+                    <option value="2">2 hours</option>
+                    <option value="3">3 hours</option>
                   </select>
                   <select name="minutes" value={formData.minutes} onChange={(e) => setFormData({ ...formData, minutes: e.target.value })}>
-                    <option value="0">0분</option>
-                    <option value="15">15분</option>
-                    <option value="30">30분</option>
-                    <option value="45">45분</option>
+                    <option value="0">0 minutes</option>
+                    <option value="15">15 minutes</option>
+                    <option value="30">30 minutes</option>
+                    <option value="45">45 minutes</option>
                   </select>
                 </div>
                 
               </div>
-              <label>가격</label>
+              <label>Price</label>
               <input type="text" name="price" value={formatPrice(formData.price)} onChange={handlePriceChange} inputMode="numeric" />
             </div>
 
-            <label>규칙/취소정책</label>
+            <label>Rules/Cancellation Policy</label>
             <input type="text" name="policy" value={formData.policy} onChange={handleChange} />
           </div>
         )}
       </form>
-      <button type="submit" className="submit-button" onClick={handleSubmit}>제출하기</button>
+      <button type="submit" className="submit-button" onClick={handleSubmit}>Submit</button>
     </div>
   );
 };
