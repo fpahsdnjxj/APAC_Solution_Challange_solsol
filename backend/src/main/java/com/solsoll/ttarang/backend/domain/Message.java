@@ -25,6 +25,7 @@ public class Message extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Senderrole senderRole=Senderrole.user;
 
+    @Column(columnDefinition = "TEXT")
     private String content;
 
     @ElementCollection
