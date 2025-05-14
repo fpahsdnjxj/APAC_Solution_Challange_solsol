@@ -57,7 +57,7 @@ const Chat = () => {
   
       const newMessages = [
         ...messages,
-        { sender_role: 'user', text: userMessage },
+        { sender_role: 'user', content_text: userMessage },
       ];
       setMessages(newMessages);
       setUserMessage('');
@@ -67,8 +67,8 @@ const Chat = () => {
       //더미임
       setTimeout(() => {
         const aiResponse = {
-            sender_role: 'ai',
-          text: "제주 유채꽃 축제는 매년 4월에 열립니다. [[출처1]]",
+          sender_role: 'ai',
+          content_text: "제주 유채꽃 축제는 매년 4월에 열립니다. [[출처1]]",
           links: ["https://kto.or.kr/festival/jeju_canola"],  // 추가된 URL
         };
         setMessages([...newMessages, aiResponse]);
@@ -90,7 +90,7 @@ const Chat = () => {
 
             const { content_text, links } = response.data;  // 응답에서 내용과 링크를 받음
             setAiMessage({
-                text: content_text,
+                content_text: content_text,
                 links: links || [],  // 링크가 없을 수도 있기 때문에 기본값 설정
             });
 
@@ -138,7 +138,9 @@ const Chat = () => {
               */
 
               //더미임
-              setMessages(DUMMY_MESSAGE_LIST);
+              if(chat_id != 123412412) {
+                setMessages(DUMMY_MESSAGE_LIST);
+              }
             } catch (error) {
               if (error.response && error.response.status === 401) {
                 setError('Access token is missing or invalid');
@@ -165,7 +167,7 @@ const Chat = () => {
         setTimeout(() => {
             alert(`Chat ${chat_id} is completed successfully!`);
             navigate(`/plan/${chat_id}`, {
-                state:{ title: "유채꽃 관광상품 기획", keywords: ["한옥", "전통음식"] },
+                state:{ type:"planning", title: "유채꽃 관광상품 기획", keywords: ["한옥", "전통음식"] },
             });
         }, 1500);
         
@@ -209,9 +211,9 @@ const Chat = () => {
               <div className="chat-logo-box">
                 <img src="/logo.png" alt="로고" className="logo-image" />
               </div>
-              <p className="chat-prompt">어떤 기획을 하고 싶으신가요? 자유롭게 채팅으로 말해주세요!</p>
+              <p className="chat-prompt">What kind of plan would you like to create? Feel free to share in the chat!</p>
               <div className="question-list">
-                {Array(3).fill("Q. 이러이러한 마케팅을 하고 싶은데 어떻게 구성하면 좋을까?").map((q, i) => (
+                {Array(3).fill("Q. I want to run this kind of marketing — how should I structure it?").map((q, i) => (
                   <div className="question-card" key={i}>
                     {q}
                   </div>

@@ -56,14 +56,14 @@ const Home = () => {
     const [exportList, setExportList] = useState([]);
     const [chatList, setChatList] = useState([]);
     const [error, setError] = useState(null);
-    const [filter, setFilter] = useState('전체');
+    const [filter, setFilter] = useState('All');
     const [currentPage, setCurrentPage] = useState(0); 
     const [cardsPerPage, setCardsPerPage] = useState(5); // 기본 카드 수
 
     const filteredList = exportList.filter(plan => {
-        if (filter === '전체') return true;
-        if (filter === '마케팅') return plan.type === 'marketing';
-        if (filter === '기획') return plan.type === 'planning';
+        if (filter === 'All') return true;
+        if (filter === 'marketing') return plan.type === 'marketing';
+        if (filter === 'planning') return plan.type === 'planning';
         return true;
     });
 
@@ -179,9 +179,9 @@ const Home = () => {
           <div className="home-wrapper">
             <section className="section-document">
               <div className="section-header">
-                <h2>나의 기획서</h2>
+                <h2>My Plan</h2>
                 <div className="filters">
-                  {['전체', '마케팅', '기획'].map(f => (
+                  {['All', 'marketing', 'planning'].map(f => (
                     <span
                       key={f}
                       className={`filter ${filter === f ? 'active' : ''}`}
@@ -237,15 +237,15 @@ const Home = () => {
     
             <section className="section-chatting">
               <div className="section-header">
-                <h2>나의 채팅</h2>
+                <h2>My Chat</h2>
                 <button className="create-button" onClick={handleCreateChat}>
-                  채팅 생성
+                  create chat
                 </button>
               </div>
               <div className="chat-list">
                 {chatList.map((chat) => (
                     <div
-                        className={`chat-item ${chat.type}`} // ✅ type 클래스 적용
+                        className={`chat-item ${chat.type}`}
                         key={chat.chat_id}
                         onClick={()=> navigate(`/chat/${chat.chat_id}`)}
                     >
@@ -257,7 +257,7 @@ const Home = () => {
                                 </span>
                             ))}
                         </div>
-                        <div className="chat-date">2025.01.01 19:00</div> {/* 날짜 데이터가 없으니 고정 */}
+                        <div className="chat-date">{chat.update_date}</div> 
                     </div>
                     ))}
                 </div>

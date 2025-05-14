@@ -197,6 +197,7 @@
     padding: 4px 12px;
     font-size: 0.85rem;
     font-weight: 500;
+    min-width: 60px
   }
   
   /* 마케팅: 다홍색 */

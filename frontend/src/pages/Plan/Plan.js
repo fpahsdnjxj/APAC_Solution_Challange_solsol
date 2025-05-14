@@ -86,7 +86,8 @@ const Plan = () => {
       // Simulate successful response
       const response = {
         data: {
-          chatid: 123456,
+          type : "marketing",
+          chatid: 12432423,
           title: "유채꽃 마케팅 기획서",
           keyword: ["한옥", "전통음식", "관광"]
         }
