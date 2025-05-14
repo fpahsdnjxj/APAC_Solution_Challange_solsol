@@ -1,10 +1,8 @@
 import google.generativeai as genai
 import os
 from .prompt_templates import tourism_plan_prompt
-from .prompt_templates import marketing_strategy_prompt_template
 from .utils import generate_title_and_keywords_from_markdown
 from schema.request import Message
-
 api_key = os.getenv("GEMINI_API_KEY")
 genai.configure(api_key=api_key)
 
@@ -34,6 +32,7 @@ def generate_tourism_plan(info: dict) -> str:
 
 # 마케팅
 def generate_marketing_strategy(info: dict) -> str:
+    from .prompt_templates import marketing_strategy_prompt_template
     prompt = marketing_strategy_prompt_template.format(
         content=info["content"],
         image_urls="\n".join(info["image_urls"]),
@@ -50,6 +49,7 @@ def generate_marketing_strategy(info: dict) -> str:
 
 # 지금까지 대화 기반으로 답함 (/ai/message 용)
 def generate_chat_response(previous_message_list: list, current_message: Message) -> str:
+    from .prompt_templates import chat_prompt_template
     chat_history = ""
     for msg in previous_message_list:
         role = msg.sender_role
