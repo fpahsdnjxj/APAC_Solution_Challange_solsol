@@ -46,26 +46,40 @@ const Header = () => {
     width: '60px',
     height: '24px',
     objectFit: 'contain',
+    marginLeft: '60px',
   
   };
 
   const iconStyle = {
-    fontSize: '24px', // 사람 아이콘의 크기
+    fontSize: '24px', 
+    marginRight: '60px',
   };
 
   const modalWrapperStyle = {
     position: 'absolute',
-    top: '60px',
-    right: '20px',
+    top: '50px',
+    right: '40px',
     visibility: isModalOpen ? 'visible' : 'hidden',
     opacity: isModalOpen ? 1 : 0,
     transition: 'opacity 0.2s ease, visibility 0.2s ease',
     backgroundColor: 'white',
-    padding: '15px',
+    padding: '20px',
     boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
     zIndex: 1000,
     minWidth: '250px',
+    boxSizing: 'border-box'
   };
+
+  const logoutStyle = {
+    backgroundColor:'#FF6449',
+    border:'none',
+    borderRadius: "10px",
+    width:'200px',
+    height:'35px',
+    color: 'white',
+    alignItems: 'center',
+
+  }
 
   const handleLogout = () => {
     localStorage.removeItem('access_token');
@@ -88,11 +102,10 @@ const Header = () => {
                 onClick={toggleModal}
                 />
                 <div ref={modalRef} style={modalWrapperStyle}>
-                    <h4 style={{ margin: '0 0 10px 0' }}>마이페이지</h4>
+                    <h3 style={{ margin: '0 0 10px 0' }}>마이페이지</h3>
                     <p>이름: 홍길동</p>
                     <p>이메일: hong@example.com</p>
-                    <button className="setting">설정</button>
-                    <button className="logout" onClick={handleLogout}>로그아웃</button>
+                    <button className="logout" style={(logoutStyle)} onClick={handleLogout}>로그아웃</button>
                 </div>
             </div>
         </header>      
