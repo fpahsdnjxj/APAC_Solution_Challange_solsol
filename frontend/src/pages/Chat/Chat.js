@@ -54,7 +54,7 @@ const Chat = () => {
 
     const fetchMessages = async () => {
             try {
-              const response = await axios.get(`/chat/${chat_id}`, {
+              const response = await axios.get(`/api/chat/${chat_id}`, {
                 headers: {
                   Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
                   'Content-Type': 'application/json',
@@ -104,7 +104,7 @@ const Chat = () => {
       // }, 1500);
 
         try {
-            const response = await axios.post(`/chat/${chat_id}`, {
+            const response = await axios.post(`/api/chat/${chat_id}`, {
                 content_text: userMessage,
                 image_urls: []  // 이미지가 필요하면 여기에 추가
             }, {
@@ -173,7 +173,7 @@ const Chat = () => {
         
         
         try {
-          const response = await axios.patch(`/chat/${chat_id}/chat_complete`, {}, {
+          const response = await axios.patch(`/api/chat/${chat_id}/chat_complete`, {}, {
             headers: {
               Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
               'Content-Type': 'application/json',
