@@ -34,7 +34,7 @@ const Login = () => {
                     localStorage.setItem('refreshToken', refreshToken);
                 }
                 alert('login success');
-                navigate('/home');
+                navigate('/');
             }
         } catch (error) {
             if (error.response) {
