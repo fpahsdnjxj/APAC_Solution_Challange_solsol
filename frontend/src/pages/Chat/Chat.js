@@ -54,7 +54,7 @@ const Chat = () => {
 
     const fetchMessages = async () => {
             try {
-              const response = await axios.get(`/api/chat/${chat_id}`, {
+              const response = await axios.get(`/chat/${chat_id}`, {
                 headers: {
                   Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
                   'Content-Type': 'application/json',
@@ -62,11 +62,6 @@ const Chat = () => {
               });
               setMessages(response.data.message_list);
               
-
-              //더미임
-              //if(chat_id != 123412412) {
-                //setMessages(DUMMY_MESSAGE_LIST);
-              //}
             } catch (error) {
                 if (error.response && error.response.status === 401) {
                     setError('Access token is missing or invalid');
@@ -92,19 +87,8 @@ const Chat = () => {
   
       setLoading(true);
 
-      //더미임
-      // setTimeout(() => {
-      //   const aiResponse = {
-      //     sender_role: 'ai',
-      //     content_text: "제주 유채꽃 축제는 매년 4월에 열립니다. [[출처1]]",
-      //     links: ["https://kto.or.kr/festival/jeju_canola"],  // 추가된 URL
-      //   };
-      //   setMessages([...newMessages, aiResponse]);
-      //   setLoading(false);
-      // }, 1500);
-
         try {
-            const response = await axios.post(`/api/chat/${chat_id}`, {
+            const response = await axios.post(`/chat/${chat_id}`, {
                 content_text: userMessage,
                 image_urls: []  // 이미지가 필요하면 여기에 추가
             }, {
@@ -162,18 +146,9 @@ const Chat = () => {
     }, [chat_id]);
 
     const handleChatComplete = async () => {
-        //더미
-        setTimeout(() => {
-            alert(`Chat ${chat_id} is completed successfully!`);
-            navigate(`/plan/${chat_id}`, {
-                state:{ type:"planning", title: "유채꽃 관광상품 기획", keywords: ["한옥", "전통음식"] },
-            });
-        }, 1500);
-        
-        
         
         try {
-          const response = await axios.patch(`/api/chat/${chat_id}/chat_complete`, {}, {
+          const response = await axios.patch(`/chat/${chat_id}/chat_complete`, {}, {
             headers: {
               Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
               'Content-Type': 'application/json',

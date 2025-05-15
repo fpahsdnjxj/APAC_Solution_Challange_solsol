@@ -3,22 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Form.css';
 
-//더미. 백엔드 연결시 삭제하기
-const DUMMY_FORM_DATA = {
-  title: "Canola Flower Tourism Package Planning",
-  detail_info: "A walking course along the canola flower path",
-  location: "Seogwipo-si, Jeju Island",
-  photoUrls: [
-    { preview: "https://cdn.example.com/uploads/jeju1.jpg" },
-    { preview: "https://cdn.example.com/uploads/jeju2.jpg" },
-  ],
-  keywords: ["Hanok", "Traditional Food"],
-  available_dates: "Mon 09:00 ~ 18:00, Tue 09:00 ~ 18:00, Wed Closed, ...", // 실제 형식대로 처리
-  duration: "2시간",
-  price: 30000,
-  policy: "Cancellable up to one day in advance"
-};
-//
 
 
 
@@ -107,7 +91,6 @@ const Form = () => {
     }
   };
       
-    const token = localStorage.getItem('accessToken');
 
 
   const handleRemoveImage = (index) => {
@@ -124,11 +107,6 @@ const Form = () => {
       .join(', ');
   };
 
-//더미임. 백엔드 연결 시 지우기
-  useEffect(() => {
-    setFormData(DUMMY_FORM_DATA);
-  }, []);
-  //
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -147,16 +125,8 @@ const Form = () => {
       price: Number(formData.price),
       policy: formData.policy,
     };
-    console.log('로컬 테스트용 제출 데이터:', payload);
 
-    const dummyType = "planning"
-    const dummyChatId = 123412412;
-    const dummyTitle = "유채꽃 관광상품 기획서";
-    const dummyKeywords = ["키워드1", "키워드2", "키워드3"];
 
-    navigate(`/chat/${dummyChatId}`, {
-      state: { type: dummyType, title: dummyTitle, keywords: dummyKeywords }
-    });
 
     // 백엔드 연결 시 여기 사용 (폼 제출 api)
     const token = localStorage.getItem('accessToken');
@@ -180,7 +150,7 @@ const Form = () => {
     formToSend.append('policy', formData.policy);
 
     try {
-      const response = await axios.post('/api/chat/planning_chat', payload, {
+      const response = await axios.post('/chat/planning_chat', payload, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',

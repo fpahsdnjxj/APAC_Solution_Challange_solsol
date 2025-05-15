@@ -80,7 +80,7 @@ const SignUp = () => {
     };
 
     const handleGoogleSignUp = () => {
-      window.location.href = "http://ttarang.com/auth/google";
+      window.location.href = "http://localhost:8080/auth/google";
     };
 
     return (
