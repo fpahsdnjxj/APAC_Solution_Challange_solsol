@@ -1,6 +1,5 @@
 from .gemini_client import gemini_client
 #기획서 프롬프트 
-
 tourism_plan_prompt = """
 너는 관광 마케팅 전문가이자, 실제 마케팅 기획서를 작성하는 실무 담당자야.
 
@@ -57,6 +56,7 @@ tourism_plan_prompt = """
 
 출력은 꼭 **Markdown 형식**으로 구성해줘.
 내용은 실무자나 투자자가 읽었을 때 ‘잘 썼다’, ‘쓸 수 있겠다’는 생각이 들도록 진지하게 써줘.
+사용 언어는 꼭 영어로 해줘.
 """
 def generate_tourism_plan(title, detail_info, location, image_urls, keywords, available_dates, duration, price, policy):
 
@@ -128,6 +128,7 @@ marketing_strategy_prompt_template = """
 - 각 항목은 제목을 달고 **명확한 문단 형식**으로 작성
 - 말투는 전문가 보고서처럼 정중하고 직설적으로 유지
 - 필요 시 마케팅 관련 용어와 이론적 근거 활용
+- 출력 언어는 꼭 **영어**로 작성할 것
 """
 
 def marketing_strategy_prompt(title, detail_info, location, image_urls, keywords, available_dates, duration, price, policy):
