@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/chat")
+@RequestMapping("/chat")
 @RequiredArgsConstructor
 
 public class ChatController {
@@ -64,7 +64,7 @@ public class ChatController {
 
     @PostMapping("/planning_chat")
     public ResponseEntity<?> createPlanningChat( @AuthenticationPrincipal org.springframework.security.core.userdetails.User userDetails,
-                                                @RequestBody PlanningChatRequest request) {
+                                                 @RequestBody PlanningChatRequest request) {
         Long userId = getUserIdFromEmail(userDetails.getUsername());
         PlanningChatResponse response = chatService.createPlanningChat(userId, request);
         return ResponseEntity.ok(response);

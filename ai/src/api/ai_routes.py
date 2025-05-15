@@ -3,7 +3,7 @@ from schema.response import Export, GenerateChat, MessageResponse
 from schema.request import MarketingExportRequest, MarketingRequest, Message, PlanningExportRequest, PreviousChatInfo
 from schema.request import PlanningRequest
 from fastapi import APIRouter, HTTPException
-from ai_module.gemini_client import generate_chat_response, generate_tour_planning_export, handle_marketing_export, generate_marketing_strategy, generate_tourism_plan
+from ai_module.gemini_client import generate_chat_response, generate_export_summary, generate_marketing_strategy, generate_tourism_plan
 from ai_module.utils import generate_title_and_keywords_from_markdown
 
 router = APIRouter(prefix="/api/ai")
@@ -55,7 +55,7 @@ async def send_message(request: PreviousChatInfo):
 @router.post("/planning_export")
 async def export_final(request: PlanningExportRequest):
     try:
-        message=generate_tour_planning_export(request.previous_message_list)
+        message=generate_export_summary(request.previous_message_list)
         return Export(content=message, image_urls=[], links=[])
     
     except Exception as e:
@@ -67,7 +67,7 @@ async def export_final(request: PlanningExportRequest):
 @router.post("/marketing_export")
 async def export_final(request: MarketingExportRequest):
     try:
-        message=handle_marketing_export(request.previous_message_list)
+        message=generate_export_summary(request.previous_message_list)
         return Export(content=message, image_urls=[], links=[])
     
     except Exception as e:

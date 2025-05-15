@@ -83,14 +83,14 @@ const Header = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('access_token');
-    navigate('/');
+    navigate('/login');
   };
 
   return (
         <header style={headerStyle}>
             <div>
                 {/* public 폴더에 있는 로고 이미지 삽입 */}
-                <Link to ="/home">
+                <Link to ="/">
                     <img src="/logo.png" alt="Logo" style={logoStyle} />
                 </Link>
             </div>

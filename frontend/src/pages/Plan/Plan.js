@@ -82,8 +82,8 @@ const Plan = () => {
         },
       });
 
-      const { type, chatid, title, keyword } = response.data;
-      navigate(`/chat/${chatid}`, {
+      const { type,  chat_id: new_chat_id, title, keyword } = response.data;
+      navigate(`/chat/${new_chat_id}`, {
         state: { type, title, keywords: keyword },
       });
       setLoading(false);

@@ -1,6 +1,4 @@
-from .marketing_trends import integrate_marketing_trends
-from .gemini_client import gemini_client #type: ignore
-
+from .gemini_client import gemini_client
 #기획서 프롬프트 
 tourism_plan_prompt = """
 너는 관광 마케팅 전문가이자, 실제 마케팅 기획서를 작성하는 실무 담당자야.
@@ -60,7 +58,8 @@ tourism_plan_prompt = """
 내용은 실무자나 투자자가 읽었을 때 ‘잘 썼다’, ‘쓸 수 있겠다’는 생각이 들도록 진지하게 써줘.
 """
 def generate_tourism_plan(title, detail_info, location, image_urls, keywords, available_dates, duration, price, policy):
-   filled_prompt = tourism_plan_prompt.format(
+
+    filled_prompt = tourism_plan_prompt.format(
         title=title,
         detail_info=detail_info,
         location=location,
@@ -70,11 +69,11 @@ def generate_tourism_plan(title, detail_info, location, image_urls, keywords, av
         duration=duration,
         price=price,
         policy=policy
-   )
+    )
 
-   result = gemini_client.generate_content(filled_prompt)
+    result = gemini_client.generate_content(filled_prompt)
 
-   return result
+    return result
 
 
 # 마케팅 전략서 프롬프트
@@ -85,16 +84,7 @@ marketing_strategy_prompt_template = """
 
 ## [상품 정보]
 
-- **상품 제목:** {title}
-- **상세 설명:** {detail_info}
-- **여행지 위치:** {location}
-- **이미지 URL 목록:** 
-{image_urls}
-- **핵심 키워드:** {keywords}
-- **운영 일자:** {available_dates}
-- **소요 시간:** {duration}
-- **가격 정보:** {price}
-- **환불 및 정책:** {policy}
+- 상품 내용: {content}
 
 ---
 
@@ -141,7 +131,7 @@ marketing_strategy_prompt_template = """
 
 def marketing_strategy_prompt(title, detail_info, location, image_urls, keywords, available_dates, duration, price, policy):
 
-   filled_prompt = marketing_strategy_prompt.format(
+    filled_prompt = marketing_strategy_prompt.format(
         title=title,
         detail_info=detail_info,
         location=location,
@@ -151,29 +141,14 @@ def marketing_strategy_prompt(title, detail_info, location, image_urls, keywords
         duration=duration,
         price=price,
         policy=policy
-   )
+    )
 
-   result = gemini_client.generate_content(filled_prompt)
-   return result
+    result = gemini_client.generate_content(filled_prompt)
+    return result
 
 # 사용자기반답변 프롬프트
 chat_prompt_template = """
-당신은 관광상품을 판매하려는 사람들을 지원하는 AI 마케팅 및 기획 전문가입니다.
-
-사용자는 자신이 판매할 관광상품에 대한 정보를 제공하며, 당신은 이를 바탕으로 기획서, 마케팅 전략서, SNS 콘텐츠 아이디어 등을 작성합니다.
-
-현재까지의 대화 내용은 아래와 같습니다:
-
+다음은 사용자와의 대화입니다.
 {chat_history}
-
-이 대화를 바탕으로 사용자 요청에 적합한 내용(예: 기획서, 마케팅 전략서, 콘텐츠 아이디어 등)을 전문적이고 체계적으로 작성해주세요.
-
-문서는 실제 사업자가 바로 사용할 수 있도록 다음 기준을 따릅니다:
-- 간결하면서도 실용적인 언어 사용
-- 핵심 정보 정리 및 항목화
-- 마케팅 트렌드 또는 효과적인 전략 반영
-- 필요 시 표나 리스트 사용
-- 실제 활용 가능한 문서 형식
-
-응답은 자연스럽고, 사용자가 계속해서 추가 정보를 제공하거나 피드백할 수 있도록 여지를 남겨주세요.
+이 대화에 이어서 답변을 생성해주세요.
 """

@@ -50,6 +50,7 @@ public class AuthController {
         TokenResponseDto token = userService.handleGoogleLogin(code);
 
         String frontendRedirectUrl = "http://localhost:3000/oauth-success" +
+
                 "?accessToken=" + URLEncoder.encode(token.getAccessToken(), StandardCharsets.UTF_8);
 
         response.sendRedirect(frontendRedirectUrl);
