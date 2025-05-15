@@ -67,7 +67,6 @@ const Home = () => {
         return true;
     });
 
-
     const maxPage = Math.ceil(filteredList.length / cardsPerPage) - 1;
     const paginatedList = filteredList.slice(
         currentPage * cardsPerPage,
@@ -103,23 +102,21 @@ const Home = () => {
       };
     }, []);
 
-
     useEffect(() => {
-        /*
-        const token = localStorage.getItem('access_token');
+        const token = localStorage.getItem('accessToken');
         if (!token) {
             setError('로그인이 필요합니다.');
             return;
         }
-        */
+        
         console.log('로컬 더미 데이터 테스트');
         setExportList(DUMMY_EXPORTS);
         setChatList(DUMMY_CHATS);  
 
-        /*
+        
         const fetchExportList = async () => {
             try {
-                const response = await axios.get('/export', {
+                const response = await axios.get('/export/list', {
                     headers: {
                         Authorization: `Bearer ${token}`,
                         'Content-Type': 'application/json',
@@ -136,37 +133,38 @@ const Home = () => {
             }
         };
 
-        fetchExportList();
-        */
-       /*
         const fetchChatList = async () => {
-          const token = localStorage.getItem('access_token');
-          if (!token) {
-            setError('로그인이 필요합니다.');
-            return;
-          }
-    
-          try {
-            const response = await axios.get('/chatlist', {
-              headers: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json',
-              },
-            });
-    
-            setChatList(response.data.chat_list);
-          } catch (err) {
-            console.error('채팅 목록 로딩 오류:', err);
-            if (err.response && err.response.status === 401) {
-              setError('로그인이 필요합니다.');
-            } else {
-              setError('채팅 목록을 불러오는 중 오류가 발생했습니다.');
+            if (!token) {
+                setError('로그인이 필요합니다.');
+                return;
             }
-          }
+            try {
+                const response = await axios.get('/chat/chatlist', {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                });
+                // id → chat_id로 변환
+                setChatList(
+                  (response.data.chat_list || []).map(chat => ({
+                    ...chat,
+                    chat_id: chat.id,
+                    keywords: Array.isArray(chat.keywords) ? chat.keywords : [],
+                  }))
+                );
+            } catch (err) {
+                console.error('채팅 목록 로딩 오류:', err);
+                if (err.response && err.response.status === 401) {
+                    setError('로그인이 필요합니다.');
+                } else {
+                    setError('채팅 목록을 불러오는 중 오류가 발생했습니다.');
+                }
+            }
         };
-    
+
+        fetchExportList();
         fetchChatList();
-        */
     }, []);
 
     const handleCreateChat = () => {
@@ -195,7 +193,6 @@ const Home = () => {
                   ))}
                 </div>
               </div>
-    
               {error ? (
                 <p className="error-text">{error}</p>
               ) : (
@@ -207,7 +204,6 @@ const Home = () => {
                   >
                     {'<'}
                   </button>
-    
                   <div className="card-list">
                     {paginatedList.map((plan, index) => (
                       <div
@@ -223,7 +219,6 @@ const Home = () => {
                         <div key={`empty-${i}`} className="plan-card empty-card" />
                     ))}
                   </div>
-    
                   <button
                     className="slide-button"
                     disabled={currentPage === maxPage}
@@ -234,7 +229,6 @@ const Home = () => {
                 </div>
               )}
             </section>
-    
             <section className="section-chatting">
               <div className="section-header">
                 <h2>My Chat</h2>
@@ -251,21 +245,21 @@ const Home = () => {
                     >
                         <div className="chat-title">{chat.title}</div>
                         <div className="chat-keywords">
-                            {chat.keywords.map((keyword, i) => (
-                                <span className="keyword-tag" key={i}>
-                                    {keyword}
-                                </span>
-                            ))}
+                          {Array.isArray(chat.keywords) && chat.keywords.map((keyword, i) => (
+                            <span className="keyword-tag" key={i}>
+                              {keyword}
+                            </span>
+                          ))}
                         </div>
                         <div className="chat-date">{chat.update_date}</div> 
                     </div>
-                    ))}
-                </div>
+                ))}
+              </div>
             </section>
           </div>
           <Footer />
         </>
     );
 };
-    
+
 export default Home;

@@ -1,5 +1,4 @@
-from .marketing_trends import integrate_marketing_trends
-
+from .gemini_client import gemini_client
 #기획서 프롬프트 
 tourism_plan_prompt = """
 너는 관광 마케팅 전문가이자, 실제 마케팅 기획서를 작성하는 실무 담당자야.
@@ -155,3 +154,10 @@ def marketing_strategy_prompt(title, detail_info, location, image_urls, keywords
 
     result = gemini_client.generate_content(filled_prompt)
     return result
+
+# 사용자기반답변 프롬프트
+chat_prompt_template = """
+다음은 사용자와의 대화입니다.
+{chat_history}
+이 대화에 이어서 답변을 생성해주세요.
+"""
