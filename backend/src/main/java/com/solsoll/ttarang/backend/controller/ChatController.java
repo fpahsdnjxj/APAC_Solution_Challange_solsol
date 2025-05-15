@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -37,12 +38,16 @@ public class ChatController {
         try {
             Long userId = getUserIdFromEmail(userDetails.getUsername());
             List<Chat> chats = chatService.getIncompleteChatsByUserId(userId);
+            if(chats == null || chats.isEmpty()) {
+                return ResponseEntity.ok(Map.of("chat_list", Collections.emptyList()));
+            }
             List<Map<String, Object>> chatList = chats.stream()
                     .map(c -> Map.of(
                             "id", c.getId(),
                             "title", c.getTitle(),
                             "type", c.getType().toString(),
-                            "keywords", c.getKeywords()
+                            "keywords", c.getKeywords(),
+                            "update_date", c.getCreatedDate()
                     )).toList();
             return ResponseEntity.ok(Map.of("chat_list", chatList));
         } catch (CustomException e) {
@@ -108,10 +113,10 @@ public class ChatController {
 
             List<Map<String, Object>> messageList = messages.stream()
                     .map(m -> Map.of(
-                            "sender_role", m.getSenderRole().name().toLowerCase(),
-                            "content_text", m.getContent(),
-                            "links", m.getLinks(),
-                            "image_urls", m.getImageUrls()
+                            "sender_role", m.getSenderRole() != null ? m.getSenderRole().name().toLowerCase() : "",
+                            "content_text", m.getContent() != null ? m.getContent() : "",
+                            "links", m.getLinks() != null ? m.getLinks() : List.of(),
+                            "image_urls", m.getImageUrls() != null ? m.getImageUrls() : List.of()
                     )).toList();
 
             return ResponseEntity.ok(Map.of("message_list", messageList));
@@ -120,6 +125,7 @@ public class ChatController {
             return ResponseEntity.status(e.getErrorCode().getStatus())
                     .body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Internal server error"));
         }

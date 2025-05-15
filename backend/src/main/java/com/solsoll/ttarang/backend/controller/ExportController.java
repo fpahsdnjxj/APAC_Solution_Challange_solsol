@@ -17,10 +17,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -36,12 +38,16 @@ public class ExportController {
     public ResponseEntity<?> getExportList(@AuthenticationPrincipal org.springframework.security.core.userdetails.User userDetails) {
         Long userId = getUserIdFromEmail(userDetails.getUsername());
         List<Export> exports = exportService.getExportsByUserId(userId);
+        if(exports == null || exports.isEmpty()) {
+            return ResponseEntity.ok(Map.of("export_list", Collections.emptyList()));
+        }
         List<Map<String, String>> exportList = (List<Map<String, String>>) exports.stream()
                 .map((Function<? super Export, ?>) e -> Map.of(
                         "chat_id", e.getChat().getId().toString(),
                         "title", Optional.ofNullable(e.getTitle()).orElse("(제목 없음)"),
                         "type", e.getType().toString(),
-                        "content", trimContent(e.getContent())
+                        "content", trimContent(e.getContent()),
+                        "update_date", e.getChat().getCreatedDate()
                 )).toList();
         return ResponseEntity.ok(Map.of("export_list", exportList));
     }

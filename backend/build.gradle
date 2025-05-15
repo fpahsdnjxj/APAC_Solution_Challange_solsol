@@ -42,7 +42,6 @@ dependencies {
     implementation 'com.google.http-client:google-http-client:1.43.3'
     implementation 'com.google.http-client:google-http-client-jackson2:1.43.3'
 }
-
 tasks.named('test') {
     useJUnitPlatform()
 }

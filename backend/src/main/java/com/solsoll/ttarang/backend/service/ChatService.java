@@ -48,6 +48,7 @@ public class ChatService {
         chat.setKeywords(aiResponse.getKeywords());
         chat.setType(Chattype.planning);
         chat.setUser(user);
+        chat.setCompleted(false);
         chatRepository.save(chat);
 
         ProjectForm form = new ProjectForm();
@@ -89,6 +90,7 @@ public class ChatService {
         chat.setKeywords(aiResponse.getKeywords());
         chat.setType(Chattype.marketing);
         chat.setUser(user);
+        chat.setExportId(export.getId());
         chatRepository.save(chat);
 
         return new MarketingChatResponse(
@@ -199,8 +201,8 @@ public class ChatService {
 
 
         } else if (type == Chattype.marketing) {
-            Export defaultInfo = exportRepository.findByChat(chat)
-                    .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, "No Export found for chat id " + chatId));
+            Export defaultInfo = exportRepository.findById(chat.getExportId())
+                    .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, "No Export found for " + chat.getExportId()));
             AIMarketingRequestDto aiMarketingRequest = new AIMarketingRequestDto();
             aiMarketingRequest.setContent(defaultInfo.getContent());
             aiMarketingRequest.setLinks(defaultInfo.getLinks());

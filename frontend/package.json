@@ -2,6 +2,7 @@
   "name": "apac-solution-challenge-solsol",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://127.0.0.1:8080/",
   "dependencies": {
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
@@ -12,7 +13,9 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^7.5.3",
     "react-scripts": "5.0.1",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "react-markdown": "^8.0.7",
+    "html2pdf.js": "^0.10.1"
   },
   "scripts": {
     "start": "react-scripts start",

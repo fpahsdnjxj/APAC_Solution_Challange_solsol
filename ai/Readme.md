@@ -1,5 +1,14 @@
-기획서 틀은 prompt_templates.py
-
-프롬프트 조립 및 Gemini 호출은 gemini_client.py
-
-API로 노출은 ai_routes.py
+APAC_Solution_Challange_solsol/  
+└── ai/  
+    └── src/  
+        ├── ai_module/               
+        │   ├── gemini_client.py      
+        │   └── prompt_templates.py  
+        │   └── utils.py  
+        │  
+        ├── api/                    
+        │   ├── ai_routes.py    
+        │  
+        └── schema/                 
+            ├── request.py 
+  

@@ -27,6 +27,7 @@ public class Export extends BaseTimeEntity {
     @JoinColumn(name = "chat_id", referencedColumnName = "id")
     private Chat chat;
 
+    @Column(columnDefinition = "TEXT")
     private String content;
 
     @ElementCollection
