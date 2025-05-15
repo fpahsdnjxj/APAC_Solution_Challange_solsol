@@ -39,7 +39,7 @@ const SignUp = () => {
         e.preventDefault();
 
         if (formData.password !== formData.passwordConfirmation) {
-            alert('비밀번호가 일치하지 않습니다.');
+            alert('Passwords do not match');
             return;
         }
 
@@ -56,25 +56,25 @@ const SignUp = () => {
                 if (refreshToken) {
                     localStorage.setItem('refreshToken', refreshToken);
                 }
-                alert('회원가입이 완료되었습니다.');
+                alert('Registration completed');
                 navigate('/');
             } else {
-                alert('회원가입은 완료되었으나 토큰을 받지 못했습니다.');
+                alert('Registration completed, but failed to receive token');
             }
         } catch(error) {
             if(error.response) {
                 switch(error.response.status) {
                     case 400:
-                        alert(error.response.data.error || '입력값을 확인해주세요.');
+                        alert(error.response.data.error || 'Please check your input');
                         break;
                     case 409:
-                        alert('이미 존재하는 이메일입니다.');
+                        alert('This email already exists');
                         break;
                     default:
-                        alert('회원가입 중 오류가 발생했습니다.');
+                        alert('An error occurred during registration');
                 }
             } else {
-                alert('서버와 연결할 수 없습니다.');
+                alert('Unable to connect to the server');
             }
         }
     };
@@ -86,14 +86,14 @@ const SignUp = () => {
     return (
         <div className="sign-up-wrapper">
           <div className="logo-box">
-            <img src="/logo.png" alt="로고" className="logo-image" />
+            <img src="/logo.png" alt="logo" className="logo-image" />
           </div>
     
           <div className="sign-up-form">
             <form onSubmit={handleSubmit}>
               <div className="form-grid">
                 <div className="form-field">
-                  <label>이름</label>
+                  <label>name</label>
                   <input
                     type="text"
                     name="user_name"
@@ -104,7 +104,7 @@ const SignUp = () => {
                   />
                 </div>
                 <div className="form-field">
-                  <label>전화번호</label>
+                  <label>phone number</label>
                   <input
                     type="text"
                     name="phone_number"
@@ -115,7 +115,7 @@ const SignUp = () => {
                   />
                 </div>
                 <div className="form-field">
-                  <label>이메일</label>
+                  <label>email</label>
                   <input
                     type="email"
                     name="email"
@@ -126,7 +126,7 @@ const SignUp = () => {
                   />
                 </div>
                 <div className="form-field">
-                  <label>생년월일</label>
+                  <label>birth date</label>
                   <input
                     type="date"
                     name="birth_date"
@@ -137,7 +137,7 @@ const SignUp = () => {
                   />
                 </div>
                 <div className="form-field">
-                  <label>비밀번호</label>
+                  <label>password</label>
                   <input
                     type="password"
                     name="password"
@@ -148,7 +148,7 @@ const SignUp = () => {
                   />
                 </div>
                 <div className="form-field">
-                  <label>비밀번호 확인</label>
+                  <label>password confirmation</label>
                   <input
                     type="password"
                     name="passwordConfirmation"
@@ -161,12 +161,12 @@ const SignUp = () => {
               </div>
     
               <div className="button-row">
-                <button type="submit" className="signup-button">회원가입</button>
-                <button type="button" className="google-signup-button" onClick={handleGoogleSignUp}>구글로 회원가입하기</button>
+                <button type="submit" className="signup-button">Sign Up</button>
+                <button type="button" className="google-signup-button" onClick={handleGoogleSignUp}>Sign Up with Google</button>
               </div>
     
               <div className="login-link">
-                <a href="/login">로그인</a>
+                <a href="/">Login</a>
               </div>
             </form>
           </div>

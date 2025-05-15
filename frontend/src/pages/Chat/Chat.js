@@ -267,7 +267,7 @@ const Chat = () => {
                   <img src="/send.png" alt="icon" />
                 </button>
               </div>
-              {loading && <div className="loading">AI가 답변을 준비 중입니다...</div>}
+              {loading && <div className="loading">The AI is generating a response...</div>}
               <div className="chat-buttons">
                 <button className="finish-button" onClick={handleChatComplete}>
                     <img src="/check.png" alt="icon" />
