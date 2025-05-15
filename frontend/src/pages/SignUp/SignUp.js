@@ -44,7 +44,7 @@ const SignUp = () => {
         }
 
         try {
-            const response = await axios.post('/api/auth/signup', formData, {
+            const response = await axios.post('/auth/signup', formData, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -56,34 +56,15 @@ const SignUp = () => {
                 if (refreshToken) {
                     localStorage.setItem('refreshToken', refreshToken);
                 }
-<<<<<<< HEAD
-                alert('회원가입이 완료되었습니다.');
-                navigate('/');
-            } else {
-                alert('회원가입은 완료되었으나 토큰을 받지 못했습니다.');
-=======
                 alert('Registration completed');
                 navigate('/');
             } else {
                 alert('Registration completed, but failed to receive token');
->>>>>>> 019c2c056f4e60d4777da9541a118c6bd539037b
             }
         } catch(error) {
             if(error.response) {
                 switch(error.response.status) {
                     case 400:
-<<<<<<< HEAD
-                        alert(error.response.data.error || '입력값을 확인해주세요.');
-                        break;
-                    case 409:
-                        alert('이미 존재하는 이메일입니다.');
-                        break;
-                    default:
-                        alert('회원가입 중 오류가 발생했습니다.');
-                }
-            } else {
-                alert('서버와 연결할 수 없습니다.');
-=======
                         alert(error.response.data.error || 'Please check your input');
                         break;
                     case 409:
@@ -94,17 +75,12 @@ const SignUp = () => {
                 }
             } else {
                 alert('Unable to connect to the server');
->>>>>>> 019c2c056f4e60d4777da9541a118c6bd539037b
             }
         }
     };
 
     const handleGoogleSignUp = () => {
-<<<<<<< HEAD
-      window.location.href = "/api/auth/google";
-=======
-      window.location.href = "http://ttarang.com:8080/api/auth/google";
->>>>>>> 019c2c056f4e60d4777da9541a118c6bd539037b
+      window.location.href = "http://localhost:8080/auth/google";
     };
 
     return (
@@ -185,17 +161,12 @@ const SignUp = () => {
               </div>
     
               <div className="button-row">
-<<<<<<< HEAD
-                <button type="submit" className="signup-button">회원가입</button>
-                <button type="button" className="google-signup-button" onClick={handleGoogleSignUp}>구글로 회원가입하기</button>
-=======
                 <button type="submit" className="signup-button">Sign Up</button>
                 <button type="button" className="google-signup-button" onClick={handleGoogleSignUp}>Sign Up with Google</button>
->>>>>>> 019c2c056f4e60d4777da9541a118c6bd539037b
               </div>
     
               <div className="login-link">
-                <a href="/">Login</a>
+                <a href="/login">Login</a>
               </div>
             </form>
           </div>

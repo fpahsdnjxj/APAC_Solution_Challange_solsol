@@ -116,7 +116,7 @@ const Home = () => {
         
         const fetchExportList = async () => {
             try {
-                const response = await axios.get('/export/list', {
+                const response = await axios.get('/export', {
                     headers: {
                         Authorization: `Bearer ${token}`,
                         'Content-Type': 'application/json',
@@ -139,7 +139,7 @@ const Home = () => {
                 return;
             }
             try {
-                const response = await axios.get('/chat/chatlist', {
+                const response = await axios.get('/chatlist', {
                     headers: {
                         Authorization: `Bearer ${token}`,
                         'Content-Type': 'application/json',
