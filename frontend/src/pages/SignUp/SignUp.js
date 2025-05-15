@@ -44,7 +44,7 @@ const SignUp = () => {
         }
 
         try {
-            const response = await axios.post('/auth/signup', formData, {
+            const response = await axios.post('/api/auth/signup', formData, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -80,7 +80,7 @@ const SignUp = () => {
     };
 
     const handleGoogleSignUp = () => {
-      window.location.href = "http://localhost:8080/auth/google";
+      window.location.href = "/api/auth/google";
     };
 
     return (

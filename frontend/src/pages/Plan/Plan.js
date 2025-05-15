@@ -40,7 +40,7 @@ const Plan = () => {
           setError('Login required.');
           return;
         }
-        const response = await axios.get(`/export/${chat_id}`, {
+        const response = await axios.get(`/api/export/${chat_id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
@@ -75,7 +75,7 @@ const Plan = () => {
     try {
 
       // 백엔드 연결 시 이쪽 사용
-      const response = await axios.post(`/export/${chat_id}/marketing_chat`, bodyData, {
+      const response = await axios.post(`/api/export/${chat_id}/marketing_chat`, bodyData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
           'Content-Type': 'application/json',
