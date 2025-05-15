@@ -1,3 +1,4 @@
+import traceback
 from schema.response import Export, GenerateChat, MessageResponse
 from schema.request import MarketingExportRequest, MarketingRequest, Message, PlanningExportRequest, PreviousChatInfo
 from schema.request import PlanningRequest
@@ -11,7 +12,6 @@ router = APIRouter(prefix="/api/ai")
 
 @router.post("/planning")
 async def planning(request: PlanningRequest):
-    """
     try:
         info = request.dict()
         plan_markdown = generate_tourism_plan(info)
@@ -21,13 +21,10 @@ async def planning(request: PlanningRequest):
     except Exception as e:
         print(f"❌ Error: {e}")
         raise HTTPException(status_code=500, detail="An error occurred while generating the plan")
-        """
-    return GenerateChat(title="연결 확인용", keywords=[])
 
 
 @router.post("/marketing")
 async def marketing(request: MarketingRequest):
-    """
     try:
         info=request.dict()
         marketing_markdown=generate_marketing_strategy(info)
@@ -37,12 +34,9 @@ async def marketing(request: MarketingRequest):
     except Exception as e:
         print(f"Error: {e}")
         raise HTTPException(status_code=500, detail="An error occurred while generating the marketing chat")
-    """
-    return GenerateChat(title="연결 확인용", keywords=[])
 
 @router.post("/message")
 async def send_message(request: PreviousChatInfo):
-    """
     try:
         message = generate_chat_response(request.previous_message_list, request.current_message)
         response_message = Message(
@@ -56,40 +50,29 @@ async def send_message(request: PreviousChatInfo):
     except Exception as e:
         print(f"Error: {e}")
         raise HTTPException(status_code=500, detail="An error occurred while generating the response")
-    """
-    response_message = Message(
-            sender_role="ai",
-            content_text="연결 확인용",
-            links=[],
-            image_urls=[]
-        )
-    return MessageResponse(message=response_message)
+    
 
 @router.post("/planning_export")
 async def export_final(request: PlanningExportRequest):
-    """
     try:
-        message=generate_export_summary(PreviousChatInfo.previous_message_list, PreviousChatInfo.current_message)
+        message=generate_export_summary(request.previous_message_list)
         return Export(content=message, image_urls=[], links=[])
     
     except Exception as e:
+        error_message = f"Error: {e}\n{traceback.format_exc()}"
+        print(error_message)
         print(f"Error: {e}")
         raise HTTPException(status_code=500, detail="An error occurred while generating the response")
-    """
-    return Export(content="연결 확인용", image_urls=[], links=[])
 
 @router.post("/marketing_export")
 async def export_final(request: MarketingExportRequest):
-    """
     try:
-        message=generate_export_summary(PreviousChatInfo.previous_message_list, PreviousChatInfo.current_message)
+        message=generate_export_summary(request.previous_message_list)
         return Export(content=message, image_urls=[], links=[])
     
     except Exception as e:
         print(f"Error: {e}")
         raise HTTPException(status_code=500, detail="An error occurred while generating the response")
-    """
-    return Export(content="연결 확인용", image_urls=[], links=[])
 
 
     
