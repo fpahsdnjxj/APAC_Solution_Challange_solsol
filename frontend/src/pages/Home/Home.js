@@ -105,18 +105,18 @@ const Home = () => {
     useEffect(() => {
         const token = localStorage.getItem('accessToken');
         if (!token) {
-            setError('로그인이 필요합니다.');
+            setError('Login is required');
             return;
         }
         
-        console.log('로컬 더미 데이터 테스트');
-        setExportList(DUMMY_EXPORTS);
-        setChatList(DUMMY_CHATS);  
+        //console.log('로컬 더미 데이터 테스트');
+        //setExportList(DUMMY_EXPORTS);
+        //setChatList(DUMMY_CHATS);  
 
         
         const fetchExportList = async () => {
             try {
-                const response = await axios.get('/export/list', {
+                const response = await axios.get('/export', {
                     headers: {
                         Authorization: `Bearer ${token}`,
                         'Content-Type': 'application/json',
@@ -124,22 +124,22 @@ const Home = () => {
                 });
                 setExportList(response.data.export_list);
             } catch (err) {
-                console.error('기획서 로딩 오류:', err);
+                console.error('error: ', err);
                 if (err.response && err.response.status === 401) {
-                    setError('로그인이 필요합니다.');
+                    setError('Access token is missing or invalid');
                 } else {
-                    setError('기획서 목록을 불러오는 중 오류가 발생했습니다.');
+                    setError('An error occurred while loading the list of plans');
                 }
             }
         };
 
         const fetchChatList = async () => {
             if (!token) {
-                setError('로그인이 필요합니다.');
+                setError('Login is required');
                 return;
             }
             try {
-                const response = await axios.get('/chat/chatlist', {
+                const response = await axios.get('/chatlist', {
                     headers: {
                         Authorization: `Bearer ${token}`,
                         'Content-Type': 'application/json',
@@ -154,11 +154,11 @@ const Home = () => {
                   }))
                 );
             } catch (err) {
-                console.error('채팅 목록 로딩 오류:', err);
+                console.error('error: ', err);
                 if (err.response && err.response.status === 401) {
-                    setError('로그인이 필요합니다.');
+                    setError('Login is required');
                 } else {
-                    setError('채팅 목록을 불러오는 중 오류가 발생했습니다.');
+                    setError('An error occurred while loading the chat list');
                 }
             }
         };

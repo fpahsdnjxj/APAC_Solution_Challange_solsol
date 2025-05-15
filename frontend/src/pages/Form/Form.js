@@ -180,7 +180,7 @@ const Form = () => {
     formToSend.append('policy', formData.policy);
 
     try {
-      const response = await axios.post('/chat/planning_chat', payload, {
+      const response = await axios.post('/planning_chat', payload, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',

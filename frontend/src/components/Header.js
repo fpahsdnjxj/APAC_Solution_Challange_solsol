@@ -83,14 +83,14 @@ const Header = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('access_token');
-    navigate('/login');
+    navigate('/');
   };
 
   return (
         <header style={headerStyle}>
             <div>
                 {/* public 폴더에 있는 로고 이미지 삽입 */}
-                <Link to ="/">
+                <Link to ="/home">
                     <img src="/logo.png" alt="Logo" style={logoStyle} />
                 </Link>
             </div>
@@ -102,9 +102,9 @@ const Header = () => {
                 onClick={toggleModal}
                 />
                 <div ref={modalRef} style={modalWrapperStyle}>
-                    <h3 style={{ margin: '0 0 10px 0' }}>마이페이지</h3>
-                    <p>이름: 홍길동</p>
-                    <p>이메일: hong@example.com</p>
+                    <h3 style={{ margin: '0 0 10px 0' }}>Mypage</h3>
+                    <p>Name: 홍길동</p>
+                    <p>Email: hong@example.com</p>
                     <button className="logout" style={(logoutStyle)} onClick={handleLogout}>로그아웃</button>
                 </div>
             </div>

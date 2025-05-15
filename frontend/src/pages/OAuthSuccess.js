@@ -13,15 +13,15 @@ const OAuthSuccess=()=>{
 
         if (accessToken) {
             localStorage.setItem("accessToken", accessToken);
-            alert(`환영합니다.`);
-            navigate("/"); // 홈으로 이동
+            alert(`Welcome`);
+            navigate("/home"); // 홈으로 이동
         } else {
-            alert("인증 실패");
-            navigate("/login");
+            alert("Authentication failed");
+            navigate("/");
         }
     }, [])
 
-    return <div>로그인 처리 중...</div>;
+    return <div>Logging in...</div>;
 }
 
 export default OAuthSuccess;
