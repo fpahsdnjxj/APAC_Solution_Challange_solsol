@@ -60,14 +60,96 @@ def generate_chat_response(previous_message_list: list, current_message: Message
     response = gemini_client.generate_content(prompt)
     return response.text
 
-# 대화 요약해서 기획서로 정리리 (/ai/export 용)
-def generate_export_summary(previous_message_list: list) -> str:
-    chat_history = ""
-    for msg in previous_message_list:
-        role = msg.sender_role
-        content = msg.content_text
-        chat_history += f"{role.upper()}: {content}\n"
+# 기획서 export 
+from typing import List, Dict
+import markdown
+from ai_module.gemini_client import gemini_client
 
-    export_prompt = f"""다음 대화 내용을 바탕으로 관광 상품 기획서를 마크다운 형식으로 정리해줘:\n\n{chat_history.strip()}"""
-    response = gemini_client.generate_content(export_prompt)
-    return response.text
+def generate_tour_planning_export(data: Dict) -> Dict:
+    try:
+        previous_message_list = data.get("previous_message_list", [])
+        default_info = data.get("default_info", {})
+        
+        # 1. 대화 히스토리 구성
+        chat_history = ""
+        for msg in previous_message_list:
+            role = msg["sender_role"]
+            content = msg["content_text"]
+            chat_history += f"{role.upper()}: {content}\n"
+
+        # 2. 기본 정보 조립
+        title = default_info.get("title", "관광 상품 기획")
+        detail_info = default_info.get("detail_info", "")
+        location = default_info.get("location", "")
+        image_urls = default_info.get("image_urls", [])
+        keywords = ", ".join(default_info.get("keywords", []))
+        available_dates = default_info.get("available_dates", "")
+        duration = default_info.get("duration", "")
+        price = default_info.get("price", 0)
+        policy = default_info.get("policy", "")
+
+        # 3. 마크다운 기획서 생성 프롬프트 구성
+        export_prompt = f"""다음 대화 내용을 참고하여 아래 정보를 포함한 관광 상품 기획서를 마크다운 형식으로 작성해줘:
+
+### 기본 정보
+- 제목: {title}
+- 지역: {location}
+- 설명: {detail_info}
+- 키워드: {keywords}
+- 운영 기간: {available_dates}
+- 소요 시간: {duration}
+- 가격: {price}원
+- 취소 정책: {policy}
+
+### 대화 내용
+{chat_history.strip()}
+"""
+
+        # 4. AI 모델에 요청 (예: OpenAI, Gemini 등)
+        response = gemini_client.generate_content(export_prompt)
+        content_md = response.text.strip()
+
+        # 5. 참조 링크 추출
+        all_links = []
+        for msg in previous_message_list:
+            all_links.extend(msg.get("links", []))
+        all_links = list(set(all_links))  # 중복 제거
+
+        return {
+            "content": content_md,
+            "image_urls": image_urls,
+            "links": all_links
+        }
+
+    except Exception as e:
+        return {
+            "error": f"An error occurred while retrieving export list: {str(e)}"
+        }
+
+# 마케팅 전략서 export
+
+def handle_marketing_export(data: Dict) -> Dict:
+    try:
+        # 기본 정보 추출
+        default_info = data.get("default_info", {})
+        content = default_info.get("content", "")
+        image_urls = default_info.get("image_urls", [])
+        links = default_info.get("links", [])
+
+        # 대화 내역에서 링크 추가 (중복 제거)
+        previous_message_list = data.get("previous_message_list", [])
+        for msg in previous_message_list:
+            for link in msg.get("links", []):
+                if link not in links:
+                    links.append(link)
+
+        return {
+            "content": content,
+            "image_urls": image_urls,
+            "links": links
+        }
+
+    except Exception as e:
+        return {
+            "error": f"An error occurred while retrieving export list: {str(e)}"
+        }
