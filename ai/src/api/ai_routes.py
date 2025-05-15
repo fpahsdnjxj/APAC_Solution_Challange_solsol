@@ -55,7 +55,7 @@ async def send_message(request: PreviousChatInfo):
 @router.post("/planning_export")
 async def export_final(request: PlanningExportRequest):
     try:
-        message=generate_export_summary(request.previous_message_list)
+        message=generate_tour_planning_export(request.previous_message_list)
         return Export(content=message, image_urls=[], links=[])
     
     except Exception as e:
@@ -67,7 +67,7 @@ async def export_final(request: PlanningExportRequest):
 @router.post("/marketing_export")
 async def export_final(request: MarketingExportRequest):
     try:
-        message=generate_export_summary(request.previous_message_list)
+        message=handle_marketing_export(request.previous_message_list)
         return Export(content=message, image_urls=[], links=[])
     
     except Exception as e:
