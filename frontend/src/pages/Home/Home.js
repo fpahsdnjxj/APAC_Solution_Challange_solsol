@@ -106,6 +106,7 @@ const Home = () => {
         const token = localStorage.getItem('accessToken');
         if (!token) {
             setError('로그인이 필요합니다.');
+            navigate('/login'); 
             return;
         }
         
