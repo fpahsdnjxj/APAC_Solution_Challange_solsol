@@ -3,7 +3,7 @@ from schema.response import Export, GenerateChat, MessageResponse
 from schema.request import MarketingExportRequest, MarketingRequest, Message, PlanningExportRequest, PreviousChatInfo
 from schema.request import PlanningRequest
 from fastapi import APIRouter, HTTPException
-from ai_module.gemini_client import generate_chat_response, generate_export_summary, generate_marketing_strategy, generate_tourism_plan
+from ai_module.gemini_client import generate_chat_response, generate_tour_planning_export, handle_marketing_export, generate_marketing_strategy, generate_tourism_plan
 from ai_module.utils import generate_title_and_keywords_from_markdown
 
 router = APIRouter(prefix="/api/ai")
