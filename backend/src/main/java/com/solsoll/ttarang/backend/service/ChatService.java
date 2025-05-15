@@ -152,9 +152,9 @@ public class ChatService {
         Chat chat = chatRepository.findById(chatId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND, "Chat with id '" + chatId + "' not found"));
 
-        if (!chat.getUser().getId().equals(userId)) {
-            throw new CustomException(ErrorCode.UNAUTHORIZED);
-        }
+        //if (!chat.getUser().getId().equals(userId)) {
+            //throw new CustomException(ErrorCode.UNAUTHORIZED);
+        //}
 
         List<SimpleMessageDto> previous_message= new ArrayList<>();;
         messageService.findMessagesByChat(chat).forEach(message -> {
