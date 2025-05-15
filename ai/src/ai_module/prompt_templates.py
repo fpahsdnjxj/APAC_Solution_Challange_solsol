@@ -84,16 +84,7 @@ marketing_strategy_prompt_template = """
 
 ## [상품 정보]
 
-- **상품 제목:** {title}
-- **상세 설명:** {detail_info}
-- **여행지 위치:** {location}
-- **이미지 URL 목록:** 
-{image_urls}
-- **핵심 키워드:** {keywords}
-- **운영 일자:** {available_dates}
-- **소요 시간:** {duration}
-- **가격 정보:** {price}
-- **환불 및 정책:** {policy}
+- 상품 내용: {content}
 
 ---
 

@@ -36,4 +36,7 @@ public class Chat extends BaseTimeEntity {
 
     @Column(name = "is_completed")
     private boolean completed = false;
+
+    @Column(name = "export_id", nullable = false)
+    private Long exportId = -1L;
 }

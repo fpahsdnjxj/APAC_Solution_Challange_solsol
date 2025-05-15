@@ -22,6 +22,7 @@ public class ProjectForm extends BaseTimeEntity {
 
     private String title = "";
     private String location = "";
+    @Column(columnDefinition = "TEXT")
     private String detail_info = "";
 
     @ElementCollection
@@ -43,5 +44,6 @@ public class ProjectForm extends BaseTimeEntity {
     private String available_dates = "";
     private String duration = "";
     private double price ;
+    @Column(columnDefinition = "TEXT")
     private String policy = "";
 }
