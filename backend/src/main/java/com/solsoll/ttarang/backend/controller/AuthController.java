@@ -18,10 +18,9 @@ import java.nio.charset.StandardCharsets;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
     private final UserService userService;
-    private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/signup")
     public ResponseEntity<TokenResponseDto>  signup(@RequestBody @Valid UserSignUpRequestDto dto) {
@@ -38,7 +37,7 @@ public class AuthController {
     public void redirectToGoogle(HttpServletResponse response) throws IOException {
         String redirectUri = "https://accounts.google.com/o/oauth2/v2/auth" +
                 "?client_id=28631947634-arttk6ml7ov6rl981dg4f8ocmdagii1d.apps.googleusercontent.com" +
-                "&redirect_uri=http://localhost:8080/auth/google/callback" +
+                "&redirect_uri=http://ttarang.com/auth/google/callback" +
                 "&response_type=code" +
                 "&scope=openid%20email%20profile";
         response.sendRedirect(redirectUri);
@@ -48,7 +47,7 @@ public class AuthController {
     public void handleGoogleCallback(@RequestParam("code") String code, HttpServletResponse response) throws IOException  {
         TokenResponseDto token = userService.handleGoogleLogin(code);
 
-        String frontendRedirectUrl = "http://localhost:3000/oauth-success" +
+        String frontendRedirectUrl = "http://ttarang.com/oauth-success" +
 
                 "?accessToken=" + URLEncoder.encode(token.getAccessToken(), StandardCharsets.UTF_8);
 
