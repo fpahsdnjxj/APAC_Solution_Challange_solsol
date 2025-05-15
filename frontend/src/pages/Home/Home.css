@@ -2,12 +2,14 @@
     
     font-family: 'Noto Sans KR', sans-serif;
     background-color: #FAF7F6;
+    min-height: 10vh;
 }
   
 .section-document {
     background-color: white;
     margin: 0 4em 5px 4em;
     padding: 0.5em 3em;
+    min-height: 23vh;
 }
 
 .section-chatting {

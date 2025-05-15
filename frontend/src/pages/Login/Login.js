@@ -33,23 +33,23 @@ const Login = () => {
                 if (refreshToken) {
                     localStorage.setItem('refreshToken', refreshToken);
                 }
-                alert('로그인 성공');
-                navigate('/');
+                alert('login success');
+                navigate('/home');
             }
         } catch (error) {
             if (error.response) {
                 switch(error.response.status) {
                     case 401:
-                        alert('이메일 또는 비밀번호가 올바르지 않습니다.');
+                        alert('The email or password is incorrect');
                         break;
                     case 400:
-                        alert(error.response.data.error || '입력값을 확인해주세요.');
+                        alert(error.response.data.error || 'Please check your input');
                         break;
                     default:
-                        alert('로그인 중 오류가 발생했습니다.');
+                        alert('An error occurred during login');
                 }
             } else {
-                alert('서버와 연결할 수 없습니다.');
+                alert('Unable to connect to the server');
             }
             console.error('Login error:', error);
         }
@@ -63,12 +63,12 @@ const Login = () => {
     <div className="login-container">
       {/* 좌측 로고 영역 */}
       <div className="logo-box">
-        <img src="/logo.png" alt="로고" className="logo-image" />
+        <img src="/logo.png" alt="logo" className="logo-image" />
       </div>
 
       {/* 우측 로그인 폼 */}
       <form className="login-form" onSubmit={handleSubmit}>
-        <label htmlFor="email">이메일</label>
+        <label htmlFor="email">email</label>
         <input
           type="email"
           name="email"
@@ -77,7 +77,7 @@ const Login = () => {
           required
         />
 
-        <label htmlFor="password">비밀번호</label>
+        <label htmlFor="password">password</label>
         <input
           type="password"
           name="password"
@@ -87,22 +87,22 @@ const Login = () => {
         />
         <div className='button-group'>
             <button type="submit" className="login-button">
-            로그인
+            Login
             </button>
 
             <button type="button" className="google-button" onClick={handleGoogleLogin}>
-            구글 계정으로 로그인
+            Sign in with Google
             </button>
         </div>
 
         {/* 하단 링크: 회원가입 및 비번 찾기 */}
         <div className="link-row">
-          <span className="link-text">비밀번호 찾기</span>
+          <span className="link-text">Forgot password</span>
           <span
             className="link-text"
             onClick={() => navigate('/signup')} // 회원가입 페이지로 이동
           >
-            회원가입
+            Sign Up
           </span>
         </div>
       </form>
