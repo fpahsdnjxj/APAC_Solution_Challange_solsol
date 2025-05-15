@@ -158,6 +158,6 @@ def handle_marketing_export(data: Dict) -> Dict:
 def generate_export_summary(previous_message_list: list) -> str:
     chat_history = ""
     for msg in previous_message_list:
-        role = msg["sender_role"]
-        content = msg["content_text"]
+        role = msg.sender_role
+        content = msg.content_text
         chat_history += f"{role.upper()}: {content}\n"
