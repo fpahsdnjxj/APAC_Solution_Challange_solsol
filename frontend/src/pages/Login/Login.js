@@ -56,7 +56,7 @@ const Login = () => {
     };
 
     const handleGoogleLogin = () => {
-      window.location.href = "http://ttarang.com:8080/auth/google";
+     window.location.href = "http://ttarang.com:8080/auth/google";
     };
 
   return (
