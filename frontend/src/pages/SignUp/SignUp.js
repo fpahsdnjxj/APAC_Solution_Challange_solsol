@@ -103,7 +103,7 @@ const SignUp = () => {
 <<<<<<< HEAD
       window.location.href = "/api/auth/google";
 =======
-      window.location.href = "http://localhost:8080/auth/google";
+      window.location.href = "http://ttarang.com:8080/api/auth/google";
 >>>>>>> 019c2c056f4e60d4777da9541a118c6bd539037b
     };
 

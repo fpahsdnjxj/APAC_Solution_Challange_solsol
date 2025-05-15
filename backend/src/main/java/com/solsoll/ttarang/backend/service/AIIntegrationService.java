@@ -26,7 +26,7 @@ public class AIIntegrationService {
     public AIChatCreateResponse processPlanningChat(PlanningChatRequest request) {
 
         AIChatCreateResponse response=webClient.post()
-                .uri("http://localhost:8000/api/ai/planning")
+                .uri("http://ai:8000/api/ai/planning")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(request)
                 .retrieve()
@@ -42,7 +42,7 @@ public class AIIntegrationService {
                 export.getLinks()
         );
         AIChatCreateResponse response=webClient.post()
-                .uri("http://localhost:8000/api/ai/marketing")
+                .uri("http://ai:8000/api/ai/marketing")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(marketingRequestDto)
                 .retrieve()
@@ -54,7 +54,7 @@ public class AIIntegrationService {
 
     public AIResponse sendMessageToAI(AIMessageRequestDto request){
         AIResponse response=webClient.post()
-                .uri("http://localhost:8000/api/ai/message")
+                .uri("http://ai:8000/api/ai/message")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue( request)
                 .retrieve()
@@ -65,7 +65,7 @@ public class AIIntegrationService {
 
     public ExportAIResponse generatePlanningFinalExport(AIPlanningExportRequestDto exportRequestDto) {
         ExportAIResponse response=webClient.post()
-                .uri("http://localhost:8000/api/ai/planning_export")
+                .uri("http://ai:8000/api/ai/planning_export")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(exportRequestDto)
                 .retrieve()
@@ -76,7 +76,7 @@ public class AIIntegrationService {
 
     public ExportAIResponse generateMarketingFinalExport(AIMarketingExportRequestDto exportRequestDto) {
         ExportAIResponse response=webClient.post()
-                .uri("http://localhost:8000/api/ai/marketing_export")
+                .uri("http://ai:8000/api/ai/marketing_export")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(exportRequestDto)
                 .retrieve()
