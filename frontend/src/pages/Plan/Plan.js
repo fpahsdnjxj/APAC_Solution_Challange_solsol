@@ -173,7 +173,7 @@ const Plan = () => {
 
         <div className="button-wrapper">
           <button onClick={handleButtonClick}>
-            {planData.type === 'marketing' ? 'Generate PDF' : <img src="/doc.png" alt="icon" />}
+            {planData.type === 'marketing' ? <span style={{color: 'white', fontSize: '18px'}}>PDF</span> : <img src="/doc.png" alt="icon" />}
           </button>
         </div>
       </div>
