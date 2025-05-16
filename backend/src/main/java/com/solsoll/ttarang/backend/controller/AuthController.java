@@ -37,7 +37,7 @@ public class AuthController {
     public void redirectToGoogle(HttpServletResponse response) throws IOException {
         String redirectUri = "https://accounts.google.com/o/oauth2/v2/auth" +
                 "?client_id=28631947634-arttk6ml7ov6rl981dg4f8ocmdagii1d.apps.googleusercontent.com" +
-                "&redirect_uri=https://ttarang.com/auth/google/callback" +
+                "&redirect_uri=https://ttarang.com/api/auth/google/callback" +
                 "&response_type=code" +
                 "&scope=openid%20email%20profile";
         response.sendRedirect(redirectUri);
