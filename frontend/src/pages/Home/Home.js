@@ -106,6 +106,7 @@ const Home = () => {
         const token = localStorage.getItem('accessToken');
         if (!token) {
             setError('Login is required');
+            navigate('/login');
             return;
         }
         
