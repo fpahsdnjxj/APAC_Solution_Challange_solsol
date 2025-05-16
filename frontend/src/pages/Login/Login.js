@@ -55,9 +55,11 @@ const Login = () => {
         }
     };
 
+    /*
     const handleGoogleLogin = () => {
       window.location.href = "http://localhost:8080/auth/google";
     };
+    */
 
   return (
     <div className="login-container">
@@ -90,9 +92,9 @@ const Login = () => {
             Login
             </button>
 
-            <button type="button" className="google-button" onClick={handleGoogleLogin}>
+            {/*<button type="button" className="google-button" onClick={handleGoogleLogin}>
             Sign in with Google
-            </button>
+            </button>*/}
         </div>
 
         {/* 하단 링크: 회원가입 및 비번 찾기 */}

@@ -78,10 +78,11 @@ const SignUp = () => {
             }
         }
     };
-
+/*
     const handleGoogleSignUp = () => {
       window.location.href = "http://localhost:8080/auth/google";
     };
+    */
 
     return (
         <div className="sign-up-wrapper">
@@ -162,7 +163,7 @@ const SignUp = () => {
     
               <div className="button-row">
                 <button type="submit" className="signup-button">Sign Up</button>
-                <button type="button" className="google-signup-button" onClick={handleGoogleSignUp}>Sign Up with Google</button>
+                {/*<button type="button" className="google-signup-button" onClick={handleGoogleSignUp}>Sign Up with Google</button>*/}
               </div>
     
               <div className="login-link">
