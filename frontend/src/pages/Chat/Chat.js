@@ -114,7 +114,7 @@ const Chat = () => {
     const handleChatComplete = async () => {
         
         try {
-          const response = await axios.patch(`/api/chat/${chat_id}/chat_complete`, {}, {
+          const response = await axios.patch(`/api/chat/${chat_id}/chat_complete`, null, {
             headers: {
               Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
               'Content-Type': 'application/json',
@@ -134,6 +134,7 @@ const Chat = () => {
           } else if (error.response && error.response.status === 500) {
             setError('An error occurred while completing the chat');
           } else {
+            console.error(error);
             setError('An unexpected error occurred. Please try again later.');
           }
         }
