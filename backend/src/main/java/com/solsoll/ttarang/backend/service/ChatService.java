@@ -156,7 +156,7 @@ public class ChatService {
             //throw new CustomException(ErrorCode.UNAUTHORIZED);
         //}
 
-        List<SimpleMessageDto> previous_message= new ArrayList<>();;
+        List<SimpleMessageDto> previous_message= new ArrayList<>();
         messageService.findMessagesByChat(chat).forEach(message -> {
             if (message.getSenderRole() != null && message.getContent() != null) {
                 SimpleMessageDto dto = new SimpleMessageDto();
