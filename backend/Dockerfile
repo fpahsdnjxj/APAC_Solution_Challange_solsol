@@ -1,8 +1,19 @@
-FROM eclipse-temurin:21-jdk-jammy
+FROM eclipse-temurin:21-jdk-jammy AS builder
 
 WORKDIR /app
 
-# 로컬에서 scp로 복사한 jar만 사용
-COPY app.jar .
+COPY build.gradle settings.gradle ./
+COPY gradle ./gradle
+RUN ./gradlew dependencies --no-daemon
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+COPY src ./src
+RUN ./gradlew build --no-daemon
+
+
+FROM eclipse-temurin:21-jre-jammy
+
+WORKDIR /app
+
+COPY --from=builder /app/build/libs/*.jar /app.jar
+
+ENTRYPOINT ["java", "-jar", "/app.jar"]
