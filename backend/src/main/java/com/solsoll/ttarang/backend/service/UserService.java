@@ -117,7 +117,7 @@ public class UserService {
         }
         String accessToken = tokenJson.get("access_token").asText();
 
-        // 2. 사용자 정보 요청
+
         HttpRequest userInfoRequest = HttpRequest.newBuilder()
                 .uri(URI.create("https://www.googleapis.com/oauth2/v2/userinfo"))
                 .header("Authorization", "Bearer " + accessToken)
@@ -130,7 +130,7 @@ public class UserService {
         String email = userJson.get("email").asText();
         String name = userJson.get("name").asText();
 
-        // 3. 이메일로 사용자 확인 및 회원가입 처리
+
         User user = userRepository.findByEmail(email)
                 .orElseGet(() -> {
                     User newUser = new User();
