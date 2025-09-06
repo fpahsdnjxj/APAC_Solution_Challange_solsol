@@ -1,6 +1,6 @@
 import React, { useState, useEffect,useRef  } from 'react';
 import { useParams, useNavigate , useLocation} from 'react-router-dom';
-import axios from 'axios';
+import client from '../../api/client';
 import ReactMarkdown from 'react-markdown';
 import html2pdf from 'html2pdf.js';
 import './Plan.css';
@@ -40,7 +40,7 @@ const Plan = () => {
           setError('Login required.');
           return;
         }
-        const response = await axios.get(`/api/export/${chat_id}`, {
+        const response = await client.get(`/api/export/${chat_id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
@@ -75,7 +75,7 @@ const Plan = () => {
     try {
 
       // 백엔드 연결 시 이쪽 사용
-      const response = await axios.post(`/api/export/${chat_id}/marketing_chat`, bodyData, {
+      const response = await client.post(`/api/export/${chat_id}/marketing_chat`, bodyData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
           'Content-Type': 'application/json',

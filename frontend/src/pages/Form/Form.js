@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; 
-import axios from 'axios';
+import client from '../../api/client';
 import './Form.css';
 
 
@@ -150,7 +150,7 @@ const Form = () => {
     formToSend.append('policy', formData.policy);
 
     try {
-      const response = await axios.post('/api/chat/planning_chat', payload, {
+      const response = await client.post('/api/chat/planning_chat', payload, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',

@@ -5,28 +5,36 @@ import com.solsoll.ttarang.backend.domain.Export;
 import com.solsoll.ttarang.backend.domain.Message;
 import com.solsoll.ttarang.backend.domain.ProjectForm;
 import com.solsoll.ttarang.backend.dto.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class AIIntegrationService {
 
-    private final WebClient webClient=WebClient.create();
+    private final WebClient webClient;
     private final MessageService messageService;
+    private final String aiServerUrl; // AI 서버의 기본 주소를 저장할 필드
+
+    // @Value 어노테이션으로 properties의 값을 주입받습니다.
+    public AIIntegrationService(WebClient.Builder webClientBuilder,
+                                MessageService messageService,
+                                @Value("${ai.server.url}") String aiServerUrl) {
+        this.webClient = webClientBuilder.baseUrl(aiServerUrl).build();
+        this.messageService = messageService;
+        this.aiServerUrl = aiServerUrl;
+    }
 
 
     public AIChatCreateResponse processPlanningChat(PlanningChatRequest request) {
-
+        String fullUrl = "/api/ai/planning";
         AIChatCreateResponse response=webClient.post()
-                .uri("http://ai:8000/api/ai/planning")
+                .uri(fullUrl)
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(request)
                 .retrieve()
@@ -41,8 +49,9 @@ public class AIIntegrationService {
                 export.getImageUrls(),
                 export.getLinks()
         );
+        String fullUrl = "/api/ai/marketing";
         AIChatCreateResponse response=webClient.post()
-                .uri("http://ai:8000/api/ai/marketing")
+                .uri(fullUrl)
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(marketingRequestDto)
                 .retrieve()
@@ -53,8 +62,9 @@ public class AIIntegrationService {
 
 
     public AIResponse sendMessageToAI(AIMessageRequestDto request){
+        String fullUrl =  "/api/ai/message";
         AIResponse response=webClient.post()
-                .uri("http://ai:8000/api/ai/message")
+                .uri(fullUrl)
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue( request)
                 .retrieve()
@@ -64,8 +74,9 @@ public class AIIntegrationService {
     }
 
     public ExportAIResponse generatePlanningFinalExport(AIPlanningExportRequestDto exportRequestDto) {
+        String fullUrl =  "/api/ai/planning_export";
         ExportAIResponse response=webClient.post()
-                .uri("http://ai:8000/api/ai/planning_export")
+                .uri(fullUrl)
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(exportRequestDto)
                 .retrieve()
@@ -75,8 +86,9 @@ public class AIIntegrationService {
     }
 
     public ExportAIResponse generateMarketingFinalExport(AIMarketingExportRequestDto exportRequestDto) {
+        String fullUrl =  "/api/ai/marketing_export";
         ExportAIResponse response=webClient.post()
-                .uri("http://ai:8000/api/ai/marketing_export")
+                .uri(fullUrl)
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(exportRequestDto)
                 .retrieve()

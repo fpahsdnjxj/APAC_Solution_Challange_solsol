@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import axios from 'axios';
+import client from '../../api/client';
 import { useNavigate } from 'react-router-dom';
 import './SignUp.css';
 
@@ -44,7 +44,7 @@ const SignUp = () => {
         }
 
         try {
-            const response = await axios.post('/api/auth/signup', formData, {
+            const response = await client.post('/api/auth/signup', formData, {
                 headers: {
                     'Content-Type': 'application/json',
                 },

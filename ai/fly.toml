@@ -1,0 +1,14 @@
+# fly.toml app configuration file generated for ai-young-hill-6865 on 2025-09-06T21:40:45+09:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'ai-young-hill-6865'
+primary_region = 'nrt'
+
+[build]
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1

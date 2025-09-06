@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
-import axios from 'axios';
+import client from '../../api/client';
 import './Home.css';
 
 // 더미 기획서 데이터 (로컬 테스트용)
@@ -117,7 +117,7 @@ const Home = () => {
         
         const fetchExportList = async () => {
             try {
-                const response = await axios.get('/api/export/list', {
+                const response = await client.get('/api/export/list', {
                     headers: {
                         Authorization: `Bearer ${token}`,
                         'Content-Type': 'application/json',
@@ -140,7 +140,7 @@ const Home = () => {
                 return;
             }
             try {
-                const response = await axios.get('/api/chat/chatlist', {
+                const response = await client.get('/api/chat/chatlist', {
                     headers: {
                         Authorization: `Bearer ${token}`,
                         'Content-Type': 'application/json',
