@@ -18,4 +18,4 @@ WORKDIR /app
 
 COPY --from=builder /app/build/libs/*.jar /app.jar
 
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+ENTRYPOINT ["sh", "-c", "echo '--- Checking Environment Variables ---' && env && echo '--- Starting Application ---' && java -jar /app.jar"]
