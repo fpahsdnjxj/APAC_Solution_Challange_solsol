@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import client from '../../api/client';
 import './Login.css';
 
 const Login = () => {
@@ -20,7 +20,7 @@ const Login = () => {
         e.preventDefault();
 
         try {
-            const response = await axios.post('/api/auth/login', {
+            const response = await client.post('/api/auth/login', {
                 email: formData.email,
                 password: formData.password,
             }, {
@@ -56,7 +56,8 @@ const Login = () => {
     };
 
     const handleGoogleLogin = () => {
-      window.location.href = "/api/auth/google";
+      const baseURL = process.env.REACT_APP_API_URL;
+      window.location.href = `${baseURL}/api/auth/google`;
     };
 
   return (

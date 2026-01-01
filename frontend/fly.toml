@@ -7,9 +7,11 @@ app = 'frontend-nameless-violet-9484'
 primary_region = 'nrt'
 
 [build]
+  [build.args]
+    REACT_APP_API_URL = "https://backend-restless-lake-87.fly.dev"
 
 [http_service]
-  internal_port = 3000
+  internal_port = 80
   force_https = true
   auto_stop_machines = 'stop'
   auto_start_machines = true

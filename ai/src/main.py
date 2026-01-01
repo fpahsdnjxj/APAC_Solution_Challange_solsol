@@ -16,5 +16,9 @@ genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 app=FastAPI()
 app.include_router(ai_routes.router)
 
+@app.get("/health")
+def health_check():
+    return {"status": "ok"}
+
 
 

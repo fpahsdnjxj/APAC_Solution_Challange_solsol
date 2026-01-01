@@ -12,3 +12,16 @@ primary_region = 'nrt'
   memory = '1gb'
   cpu_kind = 'shared'
   cpus = 1
+
+[[services]]
+  protocol = "tcp"
+  internal_port = 8000 
+
+  [[services.ports]]
+    port = 8000 
+
+  [[services.http_checks]]
+    interval = "10s"     
+    timeout = "2s"        
+    method = "GET"
+    path = "/health" 
