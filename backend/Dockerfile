@@ -9,7 +9,7 @@ RUN chmod +x ./gradlew
 RUN ./gradlew dependencies --no-daemon
 
 COPY src ./src
-RUN ./gradlew build -x test --no-daemon
+RUN ./gradlew clean build -x test --no-daemon
 
 
 FROM eclipse-temurin:21-jre-jammy
